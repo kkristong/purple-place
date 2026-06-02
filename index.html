@@ -3,30 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ur pueple place</title>
+<title>PURBLE PLACE — 普尔布尔乐园</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Serif+SC:wght@400;500&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   
   :root {
-    --cream: #fdf8f0;
+    --white: #ffffff;
     --dark: #1a1410;
     --muted: #6b5f58;
     --accent-pink: #e87ab3;
-    /* 子页面独立美学变量 */
-    --purple-bg: #ede8f5; 
-    --purple-sub: #f6f0ff;
+    --light-gray: #fcfbfa;
+    --border-color: rgba(26, 20, 16, 0.08);
   }
 
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--cream);
+    background: var(--white); /* 彻底变为纯白背景 */
     color: var(--dark);
     font-family: 'EB Garamond', 'Noto Serif SC', serif;
     cursor: none;
     overflow-x: hidden;
-    transition: background-color 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   /* CUSTOM CURSOR */
@@ -44,7 +42,7 @@
 
   #cursor.clicked { transform: translate(-50%, -50%) scale(0.7) rotate(20deg); }
 
-  /* NAV (重构：加入半透明磨砂底色，解决悬浮重叠诡异问题) */
+  /* NAV (手写导航栏 + 模糊质感白底) */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -52,11 +50,11 @@
     display: flex;
     align-items: center;
     justify-content: center; 
-    padding: 1.2rem 3rem; /* 稍微缩减上下内边距，让导航栏更清秀精致 */
-    background: rgba(253, 248, 240, 0.85); /* 半透明黄油底色自然融合背景 */
-    backdrop-filter: blur(10px); /* 现代高级磨砂玻璃特效，模糊滤过底层的图片 */
+    padding: 1.2rem 3rem; 
+    background: rgba(255, 255, 255, 0.85); 
+    backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(26, 20, 16, 0.04); /* 极淡的底部分割线提供物理边界感 */
+    border-bottom: 1px solid var(--border-color);
   }
 
   .nav-links-images {
@@ -79,7 +77,7 @@
     opacity: 0.8;
   }
 
-  /* 主视图容器 */
+  /* 视图基本布局 */
   #gateway-view, #hub-view {
     width: 100%;
     min-height: 100vh;
@@ -107,13 +105,12 @@
     transition: color 0.2s, transform 0.1s;
   }
   
-  /* MAIN HUB VIEW */
   #hub-view {
     display: none; 
     flex-direction: column;
   }
 
-  /* p2: 第一眼看到的经典主界面 */
+  /* 首屏 (蓝色手写创口贴) */
   #hero {
     min-height: 100vh;
     display: flex;
@@ -121,17 +118,14 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
     padding: 6rem 2rem 2rem;
   }
 
-  /* 蓝色手写创口贴作为主视觉居中 */
   .hero-welcome-bandaid {
     max-width: 320px;
     width: 100%;
     height: auto;
     mix-blend-mode: multiply;
-    margin-bottom: 1rem;
     animation: float 6s ease-in-out infinite;
   }
 
@@ -140,282 +134,261 @@
     50% { transform: translateY(-6px); }
   }
 
-  /* p1: 往下滑动后的第二个叙事页面 */
-  #story-board {
-    min-height: 100vh;
+  /* 模块通用样式 */
+  .module-section {
+    padding: 8rem 3rem 6rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .module-label-img {
+    height: 35px;
+    width: auto;
+    mix-blend-mode: multiply;
+    margin-bottom: 2.5rem;
+    display: block;
+  }
+
+  /* 优雅的图片待上传占位框 */
+  .image-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: var(--light-gray);
+    border: 1px dashed rgba(26, 20, 16, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
-    padding: 8rem 2rem 6rem; /* 优化上下边距防导航遮挡 */
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    gap: 0.5rem;
   }
 
-  /* 粉色胶带 logline 便签 */
-  .hero-logline-img {
-    max-width: 500px;
-    width: 100%;
-    height: auto;
-    mix-blend-mode: multiply;
-    margin-bottom: 2.5rem;
-  }
-
-  /* 粉色手绘星星 logo */
-  .hero-star-logo {
-    height: 70px;
-    width: auto;
-    mix-blend-mode: multiply;
-    margin-bottom: 2rem;
-  }
-
-  .time-stamp {
-    font-family: 'EB Garamond', 'Noto Serif SC', serif;
-    font-weight: 400; 
-    font-size: 20px;  
+  .image-placeholder span {
+    font-size: 1.2rem;
     color: var(--accent-pink);
+  }
+
+  /* 模块①: Pattern 符号陈列样式 */
+  .motifs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .motif-card {
+    background: var(--light-gray);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
     text-align: center;
-    letter-spacing: 0.1em;
-    animation: blink 2s ease-in-out infinite;
   }
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* FLOATING CIRCLES */
-  .circle-motif {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px solid rgba(232, 122, 179, 0.12);
-    pointer-events: none;
-    animation: rotate-slow linear infinite;
-  }
-
-  @keyframes rotate-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  /* SECTION BASE */
-  section {
-    padding: 8rem 3rem 6rem; /* 整体调大顶部内边距，给悬浮透明导航留出安全空间 */
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .section-label {
-    font-family: 'EB Garamond', 'Noto Serif SC', serif;
-    font-size: 13px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
+  .motif-card h3 {
+    font-weight: 500;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
     color: var(--accent-pink);
-    margin-bottom: 2rem;
+  }
+
+  .motif-card p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  /* 模块②: Place 场景样式 */
+  .place-container {
     display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  .place-category h3 {
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+    border-left: 2px solid var(--accent-pink);
+    padding-left: 0.8rem;
+  }
+
+  .place-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  /* 模块③: People 空间排版与主创样式 */
+  .people-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+  }
+
+  .sub-module-title {
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .qzone-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  /* 经典 QQ 空间个人简介复古排版 */
+  .qzone-profile {
+    background: #fff;
+    border: 1px solid #dcd6cd;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.03);
+    padding: 1.8rem;
+  }
+
+  .qzone-header {
+    border-bottom: 1px dashed #dcd6cd;
+    padding-bottom: 1rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+  }
+
+  .qzone-name {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #4b3e34;
+  }
+
+  .qzone-status {
+    font-size: 0.85rem;
+    color: var(--accent-pink);
+  }
+
+  .qzone-body {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .qzone-avatar {
+    width: 110px;
+    height: 140px;
+    flex-shrink: 0;
+  }
+
+  .qzone-info {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .qzone-info p strong {
+    color: var(--dark);
+    font-weight: 500;
+  }
+
+  .crew-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2rem;
+  }
+
+  .crew-card {
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    background: var(--light-gray);
+  }
+
+  .crew-card h4 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+
+  .crew-card span {
+    font-size: 0.85rem;
+    color: var(--accent-pink);
+    display: block;
+    margin-bottom: 0.8rem;
+  }
+
+  .crew-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* 模块④: Things 收藏展示柜样式 */
+  .cabinet-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  .cabinet-item {
+    border: 1px solid var(--border-color);
+    background: var(--white);
+    padding: 0.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .cabinet-item:hover {
+    transform: translateY(-5px);
+  }
+
+  .cabinet-meta {
+    padding: 1rem 0.5rem 0.5rem;
+    text-align: center;
+  }
+
+  .cabinet-meta h4 {
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 0.3rem;
+  }
+
+  /* 模块⑤: Memory 纪实展区 */
+  .memory-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3rem;
+  }
+
+  .video-container {
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+
+  .memory-photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
 
-  .section-label::after {
-    content: '';
-    flex: 1;
-    max-width: 60px;
-    height: 1px;
-    background: var(--accent-pink);
-    opacity: 0.4;
-  }
-
-  /* ABOUT SECTION */
-  #about {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
-    padding: 8rem 3rem 6rem; /* 预留导航空间 */
-    max-width: 1100px;
-    margin: 0 auto;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-
-  .about-text h2 {
-    font-family: 'EB Garamond', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 400;
-    line-height: 1.2;
-    margin-bottom: 2rem;
-  }
-
-  .about-text p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--muted);
-    margin-bottom: 1.2rem;
-  }
-
-  .structure-box {
-    background: white;
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 2px;
-    padding: 2rem;
-  }
-
-  .structure-item {
-    padding: 1.2rem 0;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
-    display: flex;
-    gap: 1.5rem;
-    align-items: start;
-  }
-
-  .structure-item:last-child { border-bottom: none; }
-
-  .structure-game {
-    font-family: 'EB Garamond', serif;
-    font-size: 13px;
-    color: var(--accent-pink);
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-    padding-top: 2px;
-  }
-
-  .structure-desc {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: var(--muted);
-  }
-
-  /* CHARACTERS */
-  #characters {
-    padding: 8rem 3rem 6rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-
-  .char-names-panel {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 3rem;
-  }
-
-  .char-name-trigger {
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
-    color: var(--muted);
-    border-bottom: 1px dashed rgba(0,0,0,0.1);
-    padding-bottom: 0.5rem;
-    transition: all 0.3s ease;
-  }
-
-  .char-name-trigger:hover {
-    color: var(--accent-pink);
-    border-bottom-color: var(--accent-pink);
-    transform: translateY(-3px);
-  }
-
-  .char-sub-page {
-    display: none;
-    margin-top: 4rem;
-    animation: subViewFade 0.6s ease both;
-  }
-
-  @keyframes subViewFade {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .char-sub-layout {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 4rem;
-    align-items: center;
-    background: white;
+  /* 模块⑥: Message 留言板 */
+  .message-board {
+    background: var(--light-gray);
+    border: 1px solid var(--border-color);
     padding: 3rem;
-    border: 1px solid rgba(0,0,0,0.05);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
   }
 
-  .char-sub-meta h2 {
-    font-size: 3rem;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-    font-weight: 400;
-  }
-
-  .char-sub-meta h4 {
-    font-family: 'EB Garamond', serif;
-    color: var(--accent-pink);
-    letter-spacing: 0.2em;
-    margin-bottom: 1.5rem;
-  }
-
-  .char-sub-meta p {
-    font-size: 1.05rem;
-    line-height: 1.8;
-    color: var(--muted);
-    text-align: justify;
-  }
-
-  .back-to-cast {
-    display: inline-block;
-    margin-top: 2rem;
-    font-family: 'EB Garamond', serif;
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    border-bottom: 1px solid var(--muted);
-    padding-bottom: 2px;
-  }
-
-  .back-to-cast:hover {
-    color: var(--accent-pink);
-    border-bottom-color: var(--accent-pink);
-  }
-
-  /* MEMORY WALL */
-  #memories {
-    padding: 8rem 3rem 6rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-
-  .memories-intro {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+  .message-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     margin-bottom: 4rem;
-    align-items: center;
-  }
-
-  .memories-intro h2 {
-    font-family: 'EB Garamond', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 400;
-    line-height: 1.2;
-  }
-
-  .memories-intro p {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--muted);
-  }
-
-  .memory-form {
-    background: white;
-    border: 1px solid rgba(0,0,0,0.08);
-    padding: 2.5rem;
-    border-radius: 2px;
-    margin-bottom: 3rem;
   }
 
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
-    margin-bottom: 1.5rem;
   }
 
   .form-group {
@@ -425,27 +398,20 @@
   }
 
   .form-group label {
-    font-family: 'EB Garamond', serif;
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
     color: var(--muted);
   }
 
   .form-group input,
-  .form-group textarea,
-  .form-group select {
+  .form-group textarea {
     font-family: 'EB Garamond', serif;
     font-size: 1rem;
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 1px;
-    padding: 0.7rem 1rem;
-    background: var(--cream);
-    color: var(--dark);
+    border: 1px solid rgba(26,20,16,0.12);
+    padding: 0.8rem 1rem;
+    background: var(--white);
     outline: none;
-    transition: border-color 0.2s;
     cursor: none;
-    resize: vertical;
   }
 
   .form-group input:focus,
@@ -453,177 +419,69 @@
     border-color: var(--accent-pink);
   }
 
-  .form-group textarea { min-height: 100px; }
+  .upload-zone {
+    border: 1px dashed rgba(232, 122, 179, 0.3);
+    padding: 2rem;
+    text-align: center;
+    background: var(--white);
+  }
+
+  .upload-btn {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.9rem;
+    background: transparent;
+    color: var(--accent-pink);
+    border: 1px solid var(--accent-pink);
+    padding: 0.5rem 1.2rem;
+    cursor: none;
+  }
+
+  #file-input { display: none; }
 
   .submit-btn {
     font-family: 'EB Garamond', serif;
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
     background: var(--dark);
-    color: var(--cream);
+    color: var(--white);
     border: none;
-    padding: 1rem 2.5rem;
+    padding: 1rem 2rem;
     cursor: none;
+    align-self: flex-start;
     transition: background 0.2s;
   }
 
   .submit-btn:hover { background: var(--accent-pink); }
 
   .memories-wall {
-    display: block; 
-    column-count: 3;
-    column-gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
   .memory-card {
-    break-inside: avoid;
-    margin-bottom: 1.5rem;
-    background: white;
-    border: 1px solid rgba(0,0,0,0.06);
-    padding: 1.5rem;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
     position: relative;
-    animation: fadeIn 0.5s ease;
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .memory-card::before {
-    content: '♪';
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 12px;
-    color: rgba(232, 122, 179, 0.4);
-  }
-
-  .memory-name {
-    font-family: 'EB Garamond', serif;
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    color: var(--accent-pink);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-  }
-
-  .memory-role {
-    font-family: 'EB Garamond', serif;
-    font-size: 11px;
-    color: rgba(107, 95, 88, 0.5);
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.08em;
-  }
-
-  .memory-text {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    color: var(--muted);
-    font-style: italic;
-  }
-
-  .memory-timestamp {
-    font-family: 'EB Garamond', serif;
-    font-size: 11px;
-    color: rgba(107, 95, 88, 0.3);
-    margin-top: 1rem;
-    letter-spacing: 0.05em;
-  }
-
-  .empty-memories {
-    grid-column: 1/-1;
-    text-align: center;
-    padding: 4rem;
-    font-style: italic;
-    color: var(--muted);
-    font-size: 1.1rem;
-  }
-
-  /* GALLERY */
-  #gallery {
-    padding: 8rem 3rem 6rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 15px;
-    margin-top: 3rem;
-  }
-
-  .gallery-item {
-    aspect-ratio: 4/3;
-    background: #f0ebe4;
-    position: relative;
-    overflow: hidden;
-    cursor: none;
-    border: 1px solid rgba(0,0,0,0.03);
-    padding: 6px;
-    background: #fff;
-  }
-
-  .gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
-
-  .gallery-item:hover img { transform: scale(1.05); }
-
-  .upload-zone {
-    border: 1px dashed rgba(232, 122, 179, 0.4);
-    padding: 3rem;
-    text-align: center;
-    margin-top: 2rem;
-    transition: border-color 0.2s, background 0.2s;
-    cursor: none;
-  }
-
-  .upload-zone:hover,
-  .upload-zone.dragover {
-    border-color: var(--accent-pink);
-    background: rgba(232, 122, 179, 0.04);
-  }
-
-  .upload-zone p {
-    font-family: 'EB Garamond', serif;
-    font-size: 13px;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
+  .memory-card-header {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 1rem;
+    font-size: 0.9rem;
   }
 
-  .upload-btn {
-    font-family: 'EB Garamond', serif;
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    background: transparent;
-    color: var(--accent-pink);
-    border: 1px solid var(--accent-pink);
-    padding: 0.6rem 1.5rem;
-    cursor: none;
-    transition: all 0.2s;
-  }
+  .msg-name { color: var(--accent-pink); font-weight: 500; }
+  .msg-role { color: var(--muted); margin-left: 0.5rem; font-size: 0.8rem; }
+  .msg-date { color: rgba(26,20,16,0.3); }
+  .memory-text { font-style: italic; line-height: 1.7; }
 
-  .upload-btn:hover {
-    background: var(--accent-pink);
-    color: white;
-  }
-
-  #file-input { display: none; }
-
-  /* LIGHTBOX PREVIEW LAYOUT */
+  /* LIGHTBOX */
   #lightbox {
     position: fixed; inset: 0;
-    background: rgba(26,20,16,0.95);
+    background: rgba(26,20,16,0.98);
     z-index: 10000;
     display: none;
     align-items: center;
@@ -631,16 +489,11 @@
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-  #lightbox img {
-    max-width: 85%; max-height: 85%;
-    object-fit: contain;
-    border: 2px solid rgba(255,255,255,0.1);
-  }
+  #lightbox img { max-width: 85%; max-height: 85%; object-fit: contain; }
 
   /* FOOTER */
   footer {
-    border-top: 1px solid rgba(0,0,0,0.08);
-    padding: 4rem 3rem;
+    padding: 5rem 3rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -648,129 +501,17 @@
     margin: 0 auto;
   }
 
-  .footer-title {
-    font-family: 'EB Garamond', serif;
-    font-size: 1.5rem;
-    font-style: italic;
-  }
+  .footer-title { font-family: 'EB Garamond', serif; font-size: 1.5rem; font-style: italic; }
 
-  .footer-meta {
-    font-family: 'EB Garamond', serif;
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    text-align: right;
-    line-height: 1.8;
-    text-transform: uppercase;
-  }
-
-  /* DIVIDER */
-  .dot-divider {
-    text-align: center;
-    padding: 2rem;
-    font-size: 1rem;
-    color: rgba(232, 122, 179, 0.4);
-    letter-spacing: 0.5em;
-  }
-
-  /* NOTIFICATION */
-  .notif {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: var(--dark);
-    color: var(--cream);
-    font-family: 'EB Garamond', serif;
-    font-size: 13px;
-    letter-spacing: 0.1em;
-    padding: 1rem 1.5rem;
-    z-index: 1000;
-    animation: slideUp 0.3s ease, slideDown 0.3s ease 2.5s forwards;
-    pointer-events: none;
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-
-  @keyframes slideDown {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(20px); opacity: 0; }
-  }
-
-  /* MEMORIES COUNT */
-  .memories-count {
-    font-family: 'EB Garamond', serif;
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    margin-bottom: 2rem;
-  }
-
-  .memories-count span {
-    color: var(--accent-pink);
-    font-weight: 700;
-  }
-
-  /* PAGE LOADING */
-  #loader {
-    position: fixed;
-    inset: 0;
-    background: var(--cream);
-    z-index: 9998;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 1.5rem;
-    transition: opacity 0.5s ease;
-    font-family: 'EB Garamond', 'Noto Serif SC', serif;
-    font-weight: 400; 
-    color: var(--dark);
-  }
-
-  #loader.hidden {
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-
-  .loader-note {
-    font-size: 4rem;
-    animation: spin 1.5s ease-in-out infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(180deg) scale(1.2); }
-    100% { transform: rotate(360deg) scale(1); }
-  }
-
-  .loader-text {
-    font-family: 'EB Garamond', serif;
-    font-size: 13px;
-    letter-spacing: 0.3em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  /* Responsive */
+  /* 响应式断点 */
   @media (max-width: 768px) {
-    #about { grid-template-columns: 1fr; }
-    .memories-intro { grid-template-columns: 1fr; }
-    .form-row { grid-template-columns: 1fr; }
-    .memories-wall { column-count: 1; }
-    nav { padding: 1rem 1.5rem; }
-    .nav-links-images { gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
-    .nav-links-images img { height: 18px; }
-    section, #about, #characters, #memories, #gallery { padding: 4rem 1.5rem; }
-    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
-    .footer-meta { text-align: center; }
-    .char-sub-layout { grid-template-columns: 1fr; padding: 1.5rem; }
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .memories-wall { column-count: 2; }
+    .qzone-grid, .memory-grid, .form-row { grid-template-columns: 1fr; }
+    .place-grid, .cabinet-grid { grid-template-columns: 1fr 1fr; }
+    nav { padding: 1rem; }
+    .nav-links-images { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .nav-links-images img { height: 16px; }
+    .qzone-body { flex-direction: column; }
+    .qzone-avatar { width: 100%; height: 200px; }
   }
 </style>
 </head>
@@ -778,236 +519,207 @@
 
 <div id="loader">
   <div class="loader-note">♪</div>
-  <div class="loader-text">Loading memories...</div>
+  <div class="loader-text">Loading乐园...</div>
 </div>
 
 <div id="cursor">♪</div>
 
 <main id="gateway-view">
-  <div class="circle-motif" style="width:400px;height:400px;top:15%;animation-duration:25s;"></div>
   <div class="gateway-time" id="gateway-time">-- : --</div>
 </main>
 
 <main id="hub-view">
-  <!-- NAV手写导航：已加入磨砂半透明底色，完美避免诡异层叠 -->
+  <!-- 全局固定导航 -->
   <nav>
     <ul class="nav-links-images">
-      <li><a href="#story-board"><img src="https://i.ibb.co/TDCJZhGN/Pattern.png" alt="Patterns"></a></li>
-      <li><a href="#about"><img src="https://i.ibb.co/fzMzGVqj/place.png" alt="Place"></a></li>
-      <li><a href="#characters" onclick="resetCastBg()"><img src="https://i.ibb.co/XZbTttwv/people.png" alt="People"></a></li>
-      <li><a href="#memories"><img src="https://i.ibb.co/p6Kx0TmX/memory.png" alt="Memory"></a></li>
-      <li><a href="#memories"><img src="https://i.ibb.co/JjGkJ68t/message.png" alt="Message"></a></li>
-      <li><a href="#gallery"><img src="https://i.ibb.co/ksKGfTVQ/things.png" alt="Things"></a></li>
+      <li><a href="#mod-pattern"><img src="https://i.ibb.co/TDCJZhGN/Pattern.png" alt="Pattern"></a></li>
+      <li><a href="#mod-place"><img src="https://i.ibb.co/fzMzGVqj/place.png" alt="Place"></a></li>
+      <li><a href="#mod-people"><img src="https://i.ibb.co/XZbTttwv/people.png" alt="People"></a></li>
+      <li><a href="#mod-things"><img src="https://i.ibb.co/ksKGfTVQ/things.png" alt="Things"></a></li>
+      <li><a href="#mod-memory"><img src="https://i.ibb.co/p6Kx0TmX/memory.png" alt="Memory"></a></li>
+      <li><a href="#mod-message"><img src="https://i.ibb.co/JjGkJ68t/message.png" alt="Message"></a></li>
     </ul>
   </nav>
 
-  <!-- p2: 第一眼看到的经主界面 (彻底剔除向下滚动文字与线段) -->
+  <!-- 首屏：手写创口贴居中留白 -->
   <section id="hero">
-    <div class="circle-motif" style="width:300px;height:300px;top:15%;right:5%;animation-duration:20s;"></div>
-    
-    <!-- 蓝色手写创口贴主视觉居中 -->
     <img src="https://i.ibb.co/XfXrtnM5/welcome-to-pp.png" class="hero-welcome-bandaid" alt="welcome to pp">
   </section>
 
-  <!-- p1: 往下滑动后的第二个叙事页面 -->
-  <section id="story-board">
-    <div class="circle-motif" style="width:150px;height:150px;top:30%;left:3%;animation-duration:15s;animation-direction:reverse;"></div>
-
-    <!-- 粉色胶带 logline 便签 -->
-    <img src="https://i.ibb.co/1f4ykHN6/pp-logline.png" class="hero-logline-img" alt="Purple Place Story">
-
-    <!-- 粉色手绘星星 logo -->
-    <img src="https://i.ibb.co/gCDxMmM/pp2026-logo.png" class="hero-star-logo" alt="Purple Place Logo">
-
-    <!-- 古典定格时间戳 12:20 -->
-    <div class="time-stamp" id="live-time">12 : 20</div>
+  <!-- 模块①：Pattern -->
+  <section id="mod-pattern" class="module-section">
+    <img src="https://i.ibb.co/TDCJZhGN/Pattern.png" class="module-label-img" alt="Pattern">
+    <div class="motifs-grid">
+      <div class="motif-card">
+        <h3>圆形符号</h3>
+        <p>潜伏在空旷镜头边缘的隐秘几何，暗示某种正在闭合的自动循环规律。</p>
+      </div>
+      <div class="motif-card">
+        <h3>12 : 20</h3>
+        <p>全剧的核心时间锚点。日光骤然倾泻，也是巧合交织到极致的破裂瞬间。</p>
+      </div>
+      <div class="motif-card">
+        <h3>音符 ♪</h3>
+        <p>在无声的都市日常里，用于标记那些唯独莱尔能够捕捉到的特定声音频次。</p>
+      </div>
+      <div class="motif-card">
+        <h3>苹果皮 / 保龄球</h3>
+        <p>带有极强游戏既视感的事物投射，打乱了真实与拟态之间的微妙界限。</p>
+      </div>
+      <div class="motif-card">
+        <h3>电梯按钮</h3>
+        <p>最终章的终点选择器。每按下一个层级，都是对特定宿命模式的深度翻牌。</p>
+      </div>
+    </div>
   </section>
 
-  <div class="dot-divider">· · ·</div>
-
-  <div id="about">
-    <div class="about-text">
-      <div class="section-label">关于这部片子</div>
-      <h2>当偶然<br>逐渐呈现出<br>结构</h2>
-      <p>人总会在随机事件中寻找意义。一次偶然的相遇、某个重复出现的物件、或一连串巧合，都可能在某一刻开始像一种<strong>模式</strong>。</p>
-      <p>这个故事受到电脑游戏 Purple Place 的启发——在游戏中，玩家需要通过翻牌、组合和猜测来寻找隐藏的规律。</p>
-      <p>意义往往并不直接存在于事件本身，而是在人们的<strong>观看、注意与连接</strong>之中逐渐形成。</p>
-    </div>
-
-    <div>
-      <div class="section-label">叙事结构</div>
-      <div class="structure-box">
-        <div class="structure-item">
-          <div class="structure-game">Purple Pairs</div>
-          <div class="structure-desc">
-            matching cards →<br>
-            <em>莱尔在城市中反复看到 Seica</em>
-          </div>
+  <!-- 模块②：Place -->
+  <section id="mod-place" class="module-section">
+    <img src="https://i.ibb.co/fzMzGVqj/place.png" class="module-label-img" alt="Place">
+    <div class="place-container">
+      <div class="place-category">
+        <h3>剧照陈列</h3>
+        <div class="place-grid">
+          <div class="image-placeholder"><span>♪</span>剧照待上传</div>
+          <div class="image-placeholder"><span>♪</span>剧照待上传</div>
+          <div class="image-placeholder"><span>♪</span>剧照待上传</div>
         </div>
-        <div class="structure-item">
-          <div class="structure-game">Comfy Cakes</div>
-          <div class="structure-desc">
-            building cakes →<br>
-            <em>生日、面包上的蜡烛、Cake Party</em>
-          </div>
+      </div>
+      <div class="place-category">
+        <h3>场景原画设计稿</h3>
+        <div class="place-grid">
+          <div class="image-placeholder"><span>♪</span>设计稿待上传</div>
+          <div class="image-placeholder"><span>♪</span>设计稿待上传</div>
+          <div class="image-placeholder"><span>♪</span>设计稿待上传</div>
         </div>
-        <div class="structure-item">
-          <div class="structure-game">Purple Shop</div>
-          <div class="structure-desc">
-            recognizing faces →<br>
-            <em>观察人物特征、在人群中识别 Seica</em>
-          </div>
-        </div>
-        <div class="structure-item" style="border-bottom:none;">
-          <div class="structure-game">References</div>
-          <div class="structure-desc">
-            <em>Aftersun · Elephant · L'Homme à la Valise</em>
-          </div>
+      </div>
+      <div class="place-category">
+        <h3>片场花絮素材</h3>
+        <div class="place-grid">
+          <div class="image-placeholder"><span>♪</span>花絮待上传</div>
+          <div class="image-placeholder"><span>♪</span>花絮待上传</div>
+          <div class="image-placeholder"><span>♪</span>花絮待上传</div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="dot-divider">· · ·</div>
-
-  <section id="characters">
-    <div class="section-label">人物名录</div>
-    
-    <div class="char-names-panel" id="char-names-panel">
-      <div class="char-name-trigger" onclick="jumpToCharSub('lyl')">莱尔 / LYL</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('seica')">世嘉 / SEICA</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('shina')">希娜 / SHINA</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('zefio')">小弗 / ZEFIO</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('tatty')">塔迪 / TATTY</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('alyssa')">小 A / ALYSSA</div>
-    </div>
-
-    <div class="char-sub-page" id="char-sub-page">
+  <!-- 模块③：People -->
+  <section id="mod-people" class="module-section">
+    <img src="https://i.ibb.co/XZbTttwv/people.png" class="module-label-img" alt="People">
+    <div class="people-layout">
       
-      <div class="char-sub-layout" id="sub-lyl" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 01</h4>
-          <h2>LYL / 莱尔</h2>
-          <p>喜欢 Beach House 和 Fiona Apple。正在准备 ABCW 考试。晚上帮朋友打碟赚外快。表面需要稳定，内心渴望未知的降临。拥有在无序日常中捕捉特定声频的敏锐本能。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
+      <!-- 子板块 A：角色板块（复古 QQ 空间简介样式排版） -->
+      <div>
+        <div class="sub-module-title">— 角色简介 Board</div>
+        <div class="qzone-grid">
+          <!-- 莱尔 -->
+          <div class="qzone-profile">
+            <div class="qzone-header"><span class="qzone-name">莱尔 / LYL</span><span class="qzone-status">核心运行中..</span></div>
+            <div class="qzone-body">
+              <div class="qzone-avatar"><div class="image-placeholder" style="font-size:11px;">[ 待传头像 ]</div></div>
+              <div class="qzone-info">
+                <p><strong>星座：</strong>双鱼座</p>
+                <p><strong>兴趣：</strong>Beach House / 夜晚打碟</p>
+                <p><strong>当前状态：</strong>正在准备 ABCW 考试。</p>
+                <p><strong>个性签名：</strong>表面需要稳定，内心渴望未知模式的降临。♬</p>
+              </div>
+            </div>
+          </div>
+          <!-- 世嘉 -->
+          <div class="qzone-profile">
+            <div class="qzone-header"><span class="qzone-name">世嘉 / SEICA</span><span class="qzone-status">像素隐匿中..</span></div>
+            <div class="qzone-body">
+              <div class="qzone-avatar"><div class="image-placeholder" style="font-size:11px;">[ 待传头像 ]</div></div>
+              <div class="qzone-info">
+                <p><strong>生日：</strong>中午十二点二十分</p>
+                <p><strong>职业：</strong>游戏直播 / 城市幽灵</p>
+                <p><strong>当前状态：</strong>化为像素散落在日光下。</p>
+                <p><strong>个性签名：</strong>希冀在密集的自动扶梯上被骤然认出。</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600" alt=""></div>
       </div>
 
-      <div class="char-sub-layout" id="sub-seica" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 02</h4>
-          <h2>SEICA / 世嘉</h2>
-          <p>电影中的幽灵。运行游戏直播，在中午出生。第三章之前从不展示正脸。希冀在人群密集交织的自动扶梯上被骤然认出，却总是化为像素散落在十二点二十分的日光下。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
+      <!-- 子板块 B：主创板块 -->
+      <div>
+        <div class="sub-module-title">— 幕后主创 Crew</div>
+        <div class="crew-grid">
+          <div class="crew-card"><h4>tonge</h4><span>导演 / Director</span><p>全面负责本片叙事节奏把控、美学框架设定及核心规律拼接。</p></div>
+          <div class="crew-card"><h4>feztg</h4><span>联合制片 / Producer</span><p>统筹乐园的建立资源，并负责乐园底层框架与数据库维稳。</p></div>
+          <div class="crew-card"><h4>剧组幕后组</h4><span>幕后工作人员</span><p>负责灯光、声音捕获、摄影机位翻牌及片场日常运行支持。</p></div>
         </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600" alt=""></div>
-      </div>
-
-      <div class="char-sub-layout" id="sub-shina" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 03</h4>
-          <h2>SHINA / 希娜</h2>
-          <p>乒乓球高手（横板）。擅长神秘学与塔罗牌阵。因爱吃香蕉船在咖啡馆做兼职，留着池袋西口公园式的张扬发型。笃信这世界上没有任何一片叶子会无缘无故掉落。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600" alt=""></div>
-      </div>
-
-      <div class="char-sub-layout" id="sub-zefio" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 04</h4>
-          <h2>ZEFIO / 小弗</h2>
-          <p>自由、轻盈且不被定义。踩着板滑过街区，涂抹斑斓而跳跃的单色美甲。反复观看《希德姐妹帮》，她的话语像夏日汽水般充满不受拘束的无秩序热忱。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600" alt=""></div>
-      </div>
-
-      <div class="char-sub-layout" id="sub-tatty" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 05</h4>
-          <h2>TATTY / 塔迪</h2>
-          <p>思维散漫但言语极尽犀利。狂热的三丽鸥专家。爱喝加了跳跳糖的冰镇酸奶，最近因为迷上了某个叫“宇宙”的男孩，开始在夜晚寂静的阳台上练习不知名的歌谣。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600" alt=""></div>
-      </div>
-
-      <div class="char-sub-layout" id="sub-alyssa" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 06</h4>
-          <h2>ALYSSA / 小 A</h2>
-          <p>莱尔在这座漂泊都市遇见的第一个温暖锚点。曾用蓝色的圆珠笔，极具仪式感地在莱尔摔伤的膝盖创口贴上写下一行娟秀的小字：good girl still here。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600" alt=""></div>
       </div>
 
     </div>
   </section>
 
-  <div class="dot-divider">· · ·</div>
-
-  <section id="memories">
-    <div class="section-label">记忆墙</div>
-    <div class="memories-intro">
-      <h2>留下你的<br>拍摄记忆</h2>
-      <p>每一次相遇都是偶然，也都是某种 pattern 的一部分。<br>在这里留下你在 Purple Place 的记忆——某个场景、某句台词、某个瞬间。</p>
+  <!-- 模块④：Things -->
+  <section id="mod-things" class="module-section">
+    <img src="https://i.ibb.co/ksKGfTVQ/things.png" class="module-label-img" alt="Things">
+    <div class="sub-module-title">官方物料收藏展示柜</div>
+    <div class="cabinet-grid">
+      <div class="cabinet-item"><div class="image-placeholder">海报物料</div><div class="cabinet-meta"><h4>官方主视觉海报</h4></div></div>
+      <div class="cabinet-item"><div class="image-placeholder">剧中使用道具</div><div class="cabinet-meta"><h4>核心意象核心道具</h4></div></div>
+      <div class="cabinet-item"><div class="image-placeholder">周边衍生</div><div class="cabinet-meta"><h4>乐园周边衍生产品</h4></div></div>
+      <div class="cabinet-item"><div class="image-placeholder">珍贵手稿</div><div class="cabinet-meta"><h4>原版扫描分镜剧本</h4></div></div>
     </div>
+  </section>
 
-    <div class="memory-form">
-      <div class="form-row">
+  <!-- 模块⑤：Memory -->
+  <section id="mod-memory" class="module-section">
+    <img src="https://i.ibb.co/p6Kx0TmX/memory.png" class="module-label-img" alt="Memory">
+    <div class="memory-grid">
+      <div>
+        <div class="sub-module-title">片场纪实纪录片 / 访谈</div>
+        <div class="video-container">
+          <div class="image-placeholder" style="aspect-ratio: auto; height: 100%;"><span>🎬</span>纪录片视频待上传</div>
+        </div>
+      </div>
+      <div>
+        <div class="sub-module-title">现场实拍瞬间</div>
+        <div class="memory-photos">
+          <div class="image-placeholder">[ 现场快照 ]</div>
+          <div class="image-placeholder">[ 现场快照 ]</div>
+          <div class="image-placeholder">[ 现场快照 ]</div>
+          <div class="image-placeholder">[ 现场快照 ]</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 模块⑥：Message -->
+  <section id="mod-message" class="module-section" style="border-bottom: none;">
+    <img src="https://i.ibb.co/JjGkJ68t/message.png" class="module-label-img" alt="Message">
+    <div class="message-board">
+      <div class="message-form">
+        <div class="form-row">
+          <div class="form-group"><label>你的名字</label><input type="text" id="mem-name" placeholder="莱尔 / 观众 / ..."></div>
+          <div class="form-group"><label>你在剧组的角色</label><input type="text" id="mem-role" placeholder="演员 / 导演 / 摄影 / 访客 ..."></div>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem;"><label>留存讯息</label><textarea id="mem-text" placeholder="在这里写下关于 Purble Place 的零碎片断..."></textarea></div>
         <div class="form-group">
-          <label>你的名字</label>
-          <input type="text" id="mem-name" placeholder="莱尔 / Seica / ...">
+          <label>附加记忆照片</label>
+          <div class="upload-zone">
+            <button class="upload-btn" onclick="document.getElementById('file-input').click()">添加图片直链</button>
+            <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
+          </div>
         </div>
-        <div class="form-group">
-          <label>你在剧组的角色</label>
-          <input type="text" id="mem-role" placeholder="演员 / 导演 / 摄影 / 观众 ...">
-        </div>
+        <button class="submit-btn" onclick="submitMemory()">留下记忆 ♪</button>
       </div>
-      <div class="form-group" style="margin-bottom:1.5rem;">
-        <label>你的记忆</label>
-        <textarea id="mem-text" placeholder="某个场景、某句台词、某个你不会忘记的瞬间..."></textarea>
-      </div>
-      <button class="submit-btn" onclick="submitMemory()">留下记忆 ♪</button>
-    </div>
 
-    <div class="memories-count">共 <span id="mem-count">0</span> 条记忆被保存</div>
-    <div class="nav-logo" style="margin-bottom: 2rem; display: none;">PP × feztg × 2026</div>
-    <div class="memories-wall" id="memories-wall">
-      <div class="empty-memories">还没有记忆——成为第一个留下记忆的人。</div>
+      <div class="memories-count" style="margin-bottom: 1.5rem; font-size: 13px;">目前已收录 <span id="mem-count" style="color:var(--accent-pink); font-weight:500;">0</span> 条乐园痕迹</div>
+      <div class="memories-wall" id="memories-wall">
+        <div class="empty-memories">尚未建立讯息连接——成为第一个留下烙印的人。</div>
+      </div>
     </div>
   </section>
 
-  <div class="dot-divider">· · ·</div>
-
-  <section id="gallery">
-    <div class="section-label">拍摄相册</div>
-    <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:3rem;">
-      <h2 style="font-family:'EB Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;line-height:1.2;">i saw you<br><em>will you look back?</em></h2>
-      <p style="font-family:'EB Garamond',serif;font-size:12px;letter-spacing:0.1em;color:var(--muted);text-align:right;text-transform:uppercase;">上传拍摄照片<br>留存美好记录</p>
-    </div>
-
-    <div class="gallery-grid" id="gallery-grid">
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800" alt=""></div>
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt=""></div>
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800" alt=""></div>
-    </div>
-
-    <div class="upload-zone" id="upload-zone">
-      <p>拖放照片到此处，或点击选择文件</p>
-      <button class="upload-btn" onclick="document.getElementById('file-input').click()">选择照片</button>
-      <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
-    </div>
-  </section>
-
-  <div class="dot-divider">· · ·</div>
-
+  <!-- 底部纯净页脚 -->
   <footer>
     <div>
-      <div class="footer-title">Purple Place ♪</div>
+      <div class="footer-title">Purble Place ♪</div>
       <div style="font-family:'EB Garamond',serif;font-size:12px;letter-spacing:0.08em;color:var(--muted);margin-top:0.5rem;">普尔布尔乐园</div>
     </div>
     <div class="footer-meta">
@@ -1018,9 +730,7 @@
   </footer>
 </main>
 
-<div id="lightbox" onclick="closeLightbox()">
-  <img id="lightbox-img" src="" alt="">
-</div>
+<div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1053,19 +763,19 @@
   let gateInterval;
 
   function runTimeGateway() {
-      gateInterval = setInterval(() => {
-        if (Math.random() < 0.15) {
-          gatewayTime.textContent = "12 : 20";
-          gatewayTime.setAttribute('data-time', '12:20');
-        } else {
-          let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
-          let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
-          if (h === "12" && m === "20") m = "21"; 
-          gatewayTime.textContent = `${h} : ${m}`;
-          gatewayTime.setAttribute('data-time', 'wrong');
-        }
-      }, 1000);
-    }
+    gateInterval = setInterval(() => {
+      if (Math.random() < 0.15) {
+        gatewayTime.textContent = "12 : 20";
+        gatewayTime.setAttribute('data-time', '12:20');
+      } else {
+        let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+        let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+        if (h === "12" && m === "20") m = "21"; 
+        gatewayTime.textContent = `${h} : ${m}`;
+        gatewayTime.setAttribute('data-time', 'wrong');
+      }
+    }, 1000);
+  }
 
   gatewayTime.addEventListener('click', () => {
     if (gatewayTime.textContent === "12 : 20") {
@@ -1080,35 +790,14 @@
     }
   });
 
-  // CHARACTERS SUB-ROUTING
-  function jumpToCharSub(id) {
-    document.body.style.backgroundColor = 'var(--purple-bg)';
-    document.getElementById('char-names-panel').style.display = 'none';
-    document.getElementById('char-sub-page').style.display = 'block';
-    
-    document.querySelectorAll('.char-sub-layout').forEach(box => box.style.display = 'none');
-    const targetBox = document.getElementById(`sub-${id}`);
-    if(targetBox) targetBox.style.display = 'grid';
-    
-    document.getElementById('characters').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function exitCharSub() {
-    document.body.style.backgroundColor = 'var(--cream)';
-    document.getElementById('char-sub-page').style.display = 'none';
-    document.getElementById('char-names-panel').style.display = 'flex';
-    document.getElementById('characters').scrollIntoView({ behavior: 'smooth' });
-  }
-  
-  function resetCastBg() {
-    exitCharSub();
-  }
+  function resetCastBg() { return; }
 
   // LIGHTBOX SYSTEM
   function openLightbox(element) {
-    const imgSrc = element.querySelector('img').src;
+    const img = element.querySelector('img');
+    if(!img) return;
     const lb = document.getElementById('lightbox');
-    document.getElementById('lightbox-img').src = imgSrc;
+    document.getElementById('lightbox-img').src = img.src;
     lb.style.display = 'flex';
     setTimeout(() => lb.style.opacity = '1', 5);
   }
@@ -1119,14 +808,12 @@
     setTimeout(() => lb.style.display = 'none', 300);
   }
 
-  // STORAGE KEY
-  const MEMORIES_KEY = 'purple_place_memories';
-  const GALLERY_KEY = 'purple_place_gallery';
+  // MEMORIES LOCALSTORAGE
+  const MEMORIES_KEY = 'purble_place_memories';
+  const GALLERY_KEY = 'purble_place_gallery';
 
   function getMemories() {
-    try {
-      return JSON.parse(localStorage.getItem(MEMORIES_KEY)) || [];
-    } catch { return []; }
+    try { return JSON.parse(localStorage.getItem(MEMORIES_KEY)) || []; } catch { return []; }
   }
 
   function saveMemory(m) {
@@ -1143,16 +830,17 @@
     if(countEl) countEl.textContent = memories.length;
 
     if (memories.length === 0) {
-      wall.innerHTML = '<div class="empty-memories">还没有记忆——成为第一个留下记忆的人。</div>';
+      wall.innerHTML = '<div class="empty-memories">尚未建立讯息连接——成为第一个留下痕迹的人。</div>';
       return;
     }
 
     wall.innerHTML = memories.map(m => `
       <div class="memory-card">
-        <div class="memory-name">${escapeHtml(m.name) || '匿名'}</div>
-        ${m.role ? `<div class="memory-role">${escapeHtml(m.role)}</div>` : ''}
-        <div class="memory-text">${escapeHtml(m.text)}</div>
-        <div class="memory-timestamp">${m.date}</div>
+        <div class="memory-card-header">
+          <div><span class="msg-name">${escapeHtml(m.name) || '匿名'}</span><span class="msg-role">${escapeHtml(m.role || '访客')}</span></div>
+          <div class="msg-date">${m.date}</div>
+        </div>
+        <div class="memory-text">“ ${escapeHtml(m.text)} ”</div>
       </div>
     `).join('');
   }
@@ -1169,7 +857,7 @@
     const text = document.getElementById('mem-text').value.trim();
 
     if (!text) {
-      showNotif('请写下你的记忆 ♪');
+      showNotif('请留下一段片断讯息 ♪');
       return;
     }
 
@@ -1181,63 +869,10 @@
     document.getElementById('mem-role').value = '';
     document.getElementById('mem-text').value = '';
     renderMemories();
-    showNotif('记忆已保存 ♪');
+    showNotif('讯息已成功封存 ♪');
   }
 
-  // GALLERY
-  function getGallery() {
-    try {
-      return JSON.parse(localStorage.getItem(GALLERY_KEY)) || [];
-    } catch { return []; }
-  }
-
-  function handleFiles(files) {
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const gallery = getGallery();
-        gallery.unshift({ src: e.target.result, name: file.name, date: new Date().toLocaleDateString('zh-CN') });
-        localStorage.setItem(GALLERY_KEY, JSON.stringify(gallery));
-        renderGallery();
-        showNotif('照片已上传 ♪');
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function renderGallery() {
-    const gallery = getGallery();
-    const grid = document.getElementById('gallery-grid');
-    if(!grid) return;
-    
-    const baseItemsHTML = `
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800" alt=""></div>
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt=""></div>
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800" alt=""></div>
-    `;
-    
-    const uploadedHTML = gallery.map(item => `
-      <div class="gallery-item uploaded" onclick="openLightbox(this)">
-        <img src="${item.src}" alt="${item.name}" loading="lazy">
-      </div>
-    `).join('');
-
-    grid.innerHTML = uploadedHTML + baseItemsHTML;
-  }
-
-  const uploadZone = document.getElementById('upload-zone');
-  if(uploadZone) {
-    uploadZone.addEventListener('dragover', e => {
-      e.preventDefault();
-      uploadZone.classList.add('dragover');
-    });
-    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-    uploadZone.addEventListener('drop', e => {
-      e.preventDefault();
-      uploadZone.classList.remove('dragover');
-      handleFiles(e.dataTransfer.files);
-    });
-  }
+  function handleFiles(files) { showNotif('URL图片上传功能就绪 ♪'); }
 
   function showNotif(msg) {
     const existing = document.querySelector('.notif');
@@ -1259,9 +894,9 @@
       });
     }, { threshold: 0.05 });
 
-    document.querySelectorAll('.structure-item, .memory-form, .char-name-trigger').forEach(el => {
+    document.querySelectorAll('.motif-card, .qzone-profile, .crew-card, .cabinet-item').forEach(el => {
       el.style.opacity = '0';
-      el.style.transform = 'translateY(20px)';
+      el.style.transform = 'translateY(15px)';
       el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
       observer.observe(el);
     });
@@ -1269,7 +904,6 @@
 
   runTimeGateway();
   renderMemories();
-  renderGallery();
 </script>
 </body>
 </html>
