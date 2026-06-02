@@ -85,6 +85,18 @@
 
   .nav-links a:hover { color: var(--dark); }
 
+  /* ————【精准修复：为主视图容器补充排版基准，防止定位坍塌】———— */
+  #gateway-view, #hub-view {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    box-sizing: border-box;
+  }
+  #hub-view {
+    position: relative;
+    width: 100%;
+  }
+
   /* GATEWAY VIEW STYLE */
   #gateway-view {
     min-height: 100vh;
