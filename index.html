@@ -103,7 +103,7 @@
   }
 
   .gateway-time {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Space Mono', monospace; /* 或者改成 sans-serif; 字体会变得更现代扎实 */
     font-size: clamp(3.5rem, 8vw, 6.5rem);
     font-weight: 700;
     color: var(--dark);
@@ -113,17 +113,7 @@
     transition: color 0.2s, transform 0.1s;
   }
   
-  .gateway-time.active {
-    color: var(--accent-pink);
-    text-shadow: 0 0 30px rgba(232, 122, 179, 0.4);
-    animation: pulseGlow 1s ease-in-out infinite alternate;
-  }
-  
-  @keyframes pulseGlow {
-    from { transform: scale(1); }
-    to { transform: scale(1.03); }
-  }
-
+ 
   /* MAIN HUB VIEW */
   #hub-view {
     display: none; /* 初始隐藏，由时间网关解锁 */
@@ -877,7 +867,6 @@
 <main id="gateway-view">
   <div class="circle-motif" style="width:400px;height:400px;top:15%;animation-duration:25s;"></div>
   <div class="gateway-time" id="gateway-time">-- : --</div>
-  <p style="font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.3em; color:var(--muted); margin-top:2rem; text-transform:uppercase;">WAITING FOR THE RIFT / 寻找 12:20</p>
 </main>
 
 <main id="hub-view">
@@ -1144,19 +1133,25 @@
   let gateInterval;
 
   function runTimeGateway() {
-    gateInterval = setInterval(() => {
-      if (Math.random() > 0.88) {
-        gatewayTime.textContent = "12 : 20";
-        gatewayTime.classList.add('active');
-      } else {
-        gatewayTime.textContent = "12 : 20"; // 默认也做强制重刷纠正
-        gatewayTime.classList.remove('active');
+      gateInterval = setInterval(() => {
         let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
         let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
-        gatewayTime.textContent = `${h} : ${m}`;
-      }
-    }, 1000);
-  }
+        
+        if (Math.random() > 0.88) {
+          gatewayTime.setAttribute('data-time', '12:20');
+          
+          let fakeH = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+          let fakeM = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+          if (fakeH === "12" && fakeM === "20") fakeM = "21"; 
+          gatewayTime.textContent = `${fakeH} : ${fakeM}`;
+        } else {
+          gatewayTime.setAttribute('data-time', 'wrong');
+          
+          if (h === "12" && m === "20") m = "21"; 
+          gatewayTime.textContent = `${h} : ${m}`;
+        }
+      }, 1000);
+    }
 
   gatewayTime.addEventListener('click', () => {
     if (gatewayTime.textContent === "12 : 20") {
