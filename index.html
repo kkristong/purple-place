@@ -103,9 +103,9 @@
   }
 
   .gateway-time {
-    font-family: 'Space Mono', monospace; /* 或者改成 sans-serif; 字体会变得更现代扎实 */
+    font-family: 'EB Garamond', 'Noto Serif SC', serif; /* 换成细细的古典衬线体 */
     font-size: clamp(3.5rem, 8vw, 6.5rem);
-    font-weight: 700;
+    font-weight: 400; /* 精准细体 */
     color: var(--dark);
     letter-spacing: 0.05em;
     cursor: none;
@@ -113,7 +113,6 @@
     transition: color 0.2s, transform 0.1s;
   }
   
- 
   /* MAIN HUB VIEW */
   #hub-view {
     display: none; /* 初始隐藏，由时间网关解锁 */
@@ -199,16 +198,15 @@
 
   .time-stamp {
     font-family: 'EB Garamond', 'Noto Serif SC', serif;
-    font-size: 28px;
-    font-weight: 400; /* 变成细体 */
-    color: var(--accent-pink); 
+    font-weight: 400; /* 首页数字换成古典常规细体 */
+    font-size: 20px;  /* 精准把首页数字字号调小，变得极其清秀 */
+    color: var(--accent-pink);
     text-align: center;
     margin-top: 2rem;
     letter-spacing: 0.1em;
     position: relative;
     z-index: 2;
-    animation: blink 2s ease-in-out infinite; 
-  }
+    animation: blink 2s ease-in-out infinite;
   }
 
   @keyframes blink {
@@ -544,7 +542,7 @@
   .submit-btn:active { transform: scale(0.97); }
 
   .memories-wall {
-    display: block; /* 优化非标表现 */
+    display: block; /* 精准修复：解决 columns 排版撕裂断开的底层 Bug */
     column-count: 3;
     column-gap: 1.5rem;
   }
@@ -811,6 +809,11 @@
     flex-direction: column;
     gap: 1.5rem;
     transition: opacity 0.5s ease;
+
+    /* 精准修复：最开始加载界面的数字也换成了细细的古典衬线体 */
+    font-family: 'EB Garamond', 'Noto Serif SC', serif;
+    font-weight: 400; 
+    color: var(--dark);
   }
 
   #loader.hidden {
@@ -999,7 +1002,7 @@
           <h4>CAST FILE 04</h4>
           <h2>ZEFIO / 小弗</h2>
           <p>自由、轻盈且不被定义。踩着板滑过街区，涂抹斑斓而跳跃的单色美甲。反复观看《希德姐妹帮》，她的话语像夏日汽水般充满不受拘束的无秩序热忱。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
+          <span class="back-to-cast" onclick="escapeHtml(exitCharSub())">[ 返回人物名录 ]</span>
         </div>
         <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600" alt=""></div>
       </div>
@@ -1134,25 +1137,25 @@
   let gateInterval;
 
   function runTimeGateway() {
-      gateInterval = setInterval(() => {
-        // ——【核心概率修复逻辑】——
-        // 产生一个 0 到 1 之间的随机数。如果小于 0.15（即 15% 的概率），我们直接人工让它闪现出 12:20
-        if (Math.random() < 0.15) {
-          gatewayTime.textContent = "12 : 20";
-          gatewayTime.setAttribute('data-time', '12:20');
-        } else {
-          // 剩下 85% 的情况，它依然高冷地跑普通的纯随机时间
-          let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
-          let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
-          
-          // 兜底防御：防止极小概率下正常随机真的撞上 12:20 导致逻辑打架，强行让它变 12:21
-          if (h === "12" && m === "20") m = "21"; 
-          
-          gatewayTime.textContent = `${h} : ${m}`;
-          gatewayTime.setAttribute('data-time', 'wrong');
-        }
-      }, 1000); // 保持你改好的 1 秒慢速跳动
-    }
+    gateInterval = setInterval(() => {
+      // ——【核心概率修复逻辑】——
+      // 产生一个 0 到 1 之间的随机数。如果小于 0.45（即 45% 的概率），我们直接人工让它闪现出 12:20
+      if (Math.random() < 0.45) {
+        gatewayTime.textContent = "12 : 20";
+        gatewayTime.setAttribute('data-time', '12:20');
+      } else {
+        // 剩下 55% 的情况，它依然高冷地跑普通的纯随机时间
+        let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+        let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+        
+        // 兜底防御：防止极小概率下正常随机真的撞上 12:20 导致逻辑打架，强行让它变 12:21
+        if (h === "12" && m === "20") m = "21"; 
+        
+        gatewayTime.textContent = `${h} : ${m}`;
+        gatewayTime.setAttribute('data-time', 'wrong');
+      }
+    }, 1000); // 保持你改好的 1 秒慢速跳动
+  }
 
   gatewayTime.addEventListener('click', () => {
     if (gatewayTime.textContent === "12 : 20") {
