@@ -1134,17 +1134,23 @@
 
   function runTimeGateway() {
       gateInterval = setInterval(() => {
-        let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
-        let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
-        
-        gatewayTime.textContent = `${h} : ${m}`;
-  
-        if (h === "12" && m === "20") { 
+        // ——【核心概率修复逻辑】——
+        // 产生一个 0 到 1 之间的随机数。如果小于 0.15（即 15% 的概率），我们直接人工让它闪现出 12:20
+        if (Math.random() < 0.15) {
+          gatewayTime.textContent = "12 : 20";
           gatewayTime.setAttribute('data-time', '12:20');
         } else {
+          // 剩下 85% 的情况，它依然高冷地跑普通的纯随机时间
+          let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+          let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+          
+          // 兜底防御：防止极小概率下正常随机真的撞上 12:20 导致逻辑打架，强行让它变 12:21
+          if (h === "12" && m === "20") m = "21"; 
+          
+          gatewayTime.textContent = `${h} : ${m}`;
           gatewayTime.setAttribute('data-time', 'wrong');
         }
-      }, 1000);
+      }, 1000); // 保持你改好的 1 秒慢速跳动
     }
 
   gatewayTime.addEventListener('click', () => {
