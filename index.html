@@ -6,1377 +6,1366 @@
 <title>PURBLE PLACE — 普尔布尔乐园</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  
-  :root {
-    --pink: #f5c8e0;
-    --mint: #b8f0e0;
-    --cream: #fdf8f0;
-    --dark: #1a1410;
-    --muted: #6b5f58;
-    --accent-pink: #e87ab3;
-    --accent-mint: #4ecba0;
-    /* 子页面独立美学变量 */
-    --purple-bg: #ede8f5; 
-    --purple-sub: #f6f0ff;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--cream);
-    color: var(--dark);
-    font-family: 'EB Garamond', 'Noto Serif SC', serif;
-    cursor: none;
-    overflow-x: hidden;
-    transition: background-color 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-  }
-
-  /* CUSTOM CURSOR */
-  #cursor {
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    font-size: 22px;
-    transition: transform 0.1s ease;
-    user-select: none;
-    mix-blend-mode: multiply;
-  }
-
-  #cursor.clicked { transform: translate(-50%, -50%) scale(0.7) rotate(20deg); }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.5rem 3rem;
-    mix-blend-mode: multiply;
-  }
-
-  .nav-logo {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--dark); }
-
-  /* 主视图容器的定位基准，防止子元素布局坍塌 */
-  #gateway-view, #hub-view {
-    width: 100%;
-    min-height: 100vh;
-    position: relative;
-    box-sizing: border-box;
-  }
-
-  /* GATEWAY VIEW STYLE */
-  #gateway-view {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-
-  .gateway-time {
-    font-family: 'Space Mono', monospace; /* 或者改成 sans-serif; 字体会变得更现代扎实 */
-    font-size: clamp(3.5rem, 8vw, 6.5rem);
-    font-weight: 700;
-    color: var(--dark);
-    letter-spacing: 0.05em;
-    cursor: none;
-    user-select: none;
-    transition: color 0.2s, transform 0.1s;
-  }
-  
- 
-  /* MAIN HUB VIEW */
-  #hub-view {
-    display: none; /* 初始隐藏，由时间网关解锁 */
-    flex-direction: column;
-  }
-
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    padding: 6rem 2rem 4rem;
-  }
-
-  .hero-bg-text {
-    position: absolute;
-    font-family: 'Space Mono', monospace;
-    font-size: 16vw;
-    font-weight: 700;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(232, 122, 179, 0.15);
-    letter-spacing: -0.05em;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    white-space: nowrap;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .hero-pp-logo {
-    font-size: clamp(80px, 16vw, 200px);
-    line-height: 0.8;
-    text-align: center;
-    position: relative;
-    z-index: 2;
-    animation: float 6s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-
-  .hero-title {
-    font-family: 'EB Garamond', serif;
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 400;
-    letter-spacing: 0.3em;
-    text-align: center;
-    margin-top: 1.5rem;
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero-sub {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-align: center;
-    margin-top: 1rem;
-    text-transform: uppercase;
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero-tagline {
-    font-family: 'EB Garamond', serif;
-    font-style: italic;
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-    color: var(--muted);
-    text-align: center;
-    margin-top: 3rem;
-    max-width: 600px;
-    line-height: 1.6;
-    position: relative;
-    z-index: 2;
-  }
-
-  .time-stamp {
-    font-family: 'EB Garamond', 'Noto Serif SC', serif;
-    font-weight: 400; /* 常规细体 */
-    font-size: 20px;  /* 精准把数字字号调小（原代码是28px粗体，这里24px会很清秀） */
-    color: var(--accent-pink);
-    text-align: center;
-    margin-top: 2rem;
-    letter-spacing: 0.1em;
-    position: relative;
-    z-index: 2;
-    animation: blink 2s ease-in-out infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .scroll-hint {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    animation: bounce 2s ease-in-out infinite;
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(6px); }
-  }
-
-  .scroll-line {
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(to bottom, var(--muted), transparent);
-  }
-
-  /* FLOATING CIRCLES */
-  .circle-motif {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px solid rgba(232, 122, 179, 0.2);
-    pointer-events: none;
-    animation: rotate-slow linear infinite;
-  }
-
-  @keyframes rotate-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  /* SECTION BASE */
-  section {
-    padding: 6rem 3rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .section-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--accent-pink);
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    max-width: 60px;
-    height: 1px;
-    background: var(--accent-pink);
-    opacity: 0.4;
-  }
-
-  /* ABOUT SECTION */
-  #about {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
-    padding: 6rem 3rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-
-  .about-text h2 {
-    font-family: 'EB Garamond', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 400;
-    line-height: 1.2;
-    margin-bottom: 2rem;
-  }
-
-  .about-text p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--muted);
-    margin-bottom: 1.2rem;
-  }
-
-  .about-text p strong {
-    color: var(--dark);
-    font-weight: 500;
-  }
-
-  .structure-box {
-    background: white;
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 2px;
-    padding: 2rem;
-  }
-
-  .structure-item {
-    padding: 1.2rem 0;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
-    display: flex;
-    gap: 1.5rem;
-    align-items: start;
-  }
-
-  .structure-item:last-child { border-bottom: none; }
-
-  .structure-game {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--accent-pink);
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-    padding-top: 2px;
-  }
-
-  .structure-desc {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: var(--muted);
-  }
-
-  .structure-desc em {
-    color: var(--dark);
-    font-style: normal;
-    font-weight: 500;
-  }
-
-  /* CHARACTERS */
-  #characters {
-    padding: 6rem 3rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-
-  .char-names-panel {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 3rem;
-  }
-
-  .char-name-trigger {
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
-    color: var(--muted);
-    border-bottom: 1px dashed rgba(0,0,0,0.1);
-    padding-bottom: 0.5rem;
-    transition: all 0.3s ease;
-  }
-
-  .char-name-trigger:hover {
-    color: var(--accent-pink);
-    border-bottom-color: var(--accent-pink);
-    transform: translateY(-3px);
-  }
-
-  .char-sub-page {
-    display: none;
-    margin-top: 4rem;
-    animation: subViewFade 0.6s ease both;
-  }
-
-  @keyframes subViewFade {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .char-sub-layout {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 4rem;
-    align-items: center;
-    background: white;
-    padding: 3rem;
-    border: 1px solid rgba(0,0,0,0.05);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-  }
-
-  .char-sub-meta h2 {
-    font-size: 3rem;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-    font-weight: 400;
-  }
-
-  .char-sub-meta h4 {
-    font-family: 'Space Mono', monospace;
-    color: var(--accent-pink);
-    letter-spacing: 0.2em;
-    margin-bottom: 1.5rem;
-  }
-
-  .char-sub-meta p {
-    font-size: 1.05rem;
-    line-height: 1.8;
-    color: var(--muted);
-    text-align: justify;
-  }
-
-  .back-to-cast {
-    display: inline-block;
-    margin-top: 2rem;
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    border-bottom: 1px solid var(--muted);
-    padding-bottom: 2px;
-  }
-
-  .back-to-cast:hover {
-    color: var(--accent-pink);
-    border-bottom-color: var(--accent-pink);
-  }
-
-  /* MEMORY WALL */
-  #memories {
-    padding: 6rem 3rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-
-  .memories-intro {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    margin-bottom: 4rem;
-    align-items: center;
-  }
-
-  .memories-intro h2 {
-    font-family: 'EB Garamond', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 400;
-    line-height: 1.2;
-  }
-
-  .memories-intro p {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--muted);
-  }
-
-  .memory-form {
-    background: white;
-    border: 1px solid rgba(0,0,0,0.08);
-    padding: 2.5rem;
-    border-radius: 2px;
-    margin-bottom: 3rem;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .form-group label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    font-family: 'EB Garamond', serif;
-    font-size: 1rem;
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 1px;
-    padding: 0.7rem 1rem;
-    background: var(--cream);
-    color: var(--dark);
-    outline: none;
-    transition: border-color 0.2s;
-    cursor: none;
-    resize: vertical;
-  }
-
-  .form-group input:focus,
-  .form-group textarea:focus,
-  .form-group select:focus {
-    border-color: var(--accent-pink);
-  }
-
-  .form-group textarea { min-height: 100px; }
-
-  .submit-btn {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    background: var(--dark);
-    color: var(--cream);
-    border: none;
-    padding: 1rem 2.5rem;
-    cursor: none;
-    transition: background 0.2s, transform 0.1s;
-  }
-
-  .submit-btn:hover { background: var(--accent-pink); }
-  .submit-btn:active { transform: scale(0.97); }
-
-  .memories-wall {
-    display: block; /* <-- 精准改这一行，把原本的 columns 改成 block，文字就不会再裂开了 */
-    column-count: 3;
-    column-gap: 1.5rem;
-  }
-
-  .memory-card {
-    break-inside: avoid;
-    margin-bottom: 1.5rem;
-    background: white;
-    border: 1px solid rgba(0,0,0,0.06);
-    padding: 1.5rem;
-    position: relative;
-    animation: fadeIn 0.5s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .memory-card::before {
-    content: '♪';
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 12px;
-    color: rgba(232, 122, 179, 0.4);
-  }
-
-  .memory-name {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--accent-pink);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-  }
-
-  .memory-role {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    color: rgba(107, 95, 88, 0.5);
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.08em;
-  }
-
-  .memory-text {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    color: var(--muted);
-    font-style: italic;
-  }
-
-  .memory-timestamp {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    color: rgba(107, 95, 88, 0.3);
-    margin-top: 1rem;
-    letter-spacing: 0.05em;
-  }
-
-  .empty-memories {
-    grid-column: 1/-1;
-    text-align: center;
-    padding: 4rem;
-    font-style: italic;
-    color: var(--muted);
-    font-size: 1.1rem;
-  }
-
-  /* GALLERY */
-  #gallery {
-    padding: 6rem 3rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 15px;
-    margin-top: 3rem;
-  }
-
-  .gallery-item {
-    aspect-ratio: 4/3;
-    background: #f0ebe4;
-    position: relative;
-    overflow: hidden;
-    cursor: none;
-    border: 1px solid rgba(0,0,0,0.03);
-    padding: 6px;
-    background: #fff;
-  }
-
-  .gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
-
-  .gallery-item:hover img { transform: scale(1.05); }
-
-  .gallery-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: rgba(107, 95, 88, 0.3);
-    text-transform: uppercase;
-    background: var(--cream);
-  }
-
-  .upload-zone {
-    border: 1px dashed rgba(232, 122, 179, 0.4);
-    padding: 3rem;
-    text-align: center;
-    margin-top: 2rem;
-    transition: border-color 0.2s, background 0.2s;
-    cursor: none;
-  }
-
-  .upload-zone:hover,
-  .upload-zone.dragover {
-    border-color: var(--accent-pink);
-    background: rgba(232, 122, 179, 0.04);
-  }
-
-  .upload-zone p {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-
-  .upload-btn {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    background: transparent;
-    color: var(--accent-pink);
-    border: 1px solid var(--accent-pink);
-    padding: 0.6rem 1.5rem;
-    cursor: none;
-    transition: all 0.2s;
-  }
-
-  .upload-btn:hover {
-    background: var(--accent-pink);
-    color: white;
-  }
-
-  #file-input { display: none; }
-
-  /* LIGHTBOX PREVIEW LAYOUT */
-  #lightbox {
-    position: fixed; inset: 0;
-    background: rgba(26,20,16,0.95);
-    z-index: 10000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  #lightbox img {
-    max-width: 85%; max-height: 85%;
-    object-fit: contain;
-    border: 2px solid rgba(255,255,255,0.1);
-  }
-
-  /* FOOTER */
-  footer {
-    border-top: 1px solid rgba(0,0,0,0.08);
-    padding: 4rem 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .footer-title {
-    font-family: 'EB Garamond', serif;
-    font-size: 1.5rem;
-    font-style: italic;
-  }
-
-  .footer-meta {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    text-align: right;
-    line-height: 1.8;
-    text-transform: uppercase;
-  }
-
-  /* DIVIDER */
-  .dot-divider {
-    text-align: center;
-    padding: 2rem;
-    font-size: 1rem;
-    color: rgba(232, 122, 179, 0.4);
-    letter-spacing: 0.5em;
-  }
-
-  /* NOTIFICATION */
-  .notif {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: var(--dark);
-    color: var(--cream);
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    padding: 1rem 1.5rem;
-    z-index: 1000;
-    animation: slideUp 0.3s ease, slideDown 0.3s ease 2.5s forwards;
-    pointer-events: none;
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-
-  @keyframes slideDown {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(20px); opacity: 0; }
-  }
-
-  /* MEMORIES COUNT */
-  .memories-count {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    margin-bottom: 2rem;
-  }
-
-  .memories-count span {
-    color: var(--accent-pink);
-    font-weight: 700;
-  }
-
-  /* PAGE LOADING */
-  #loader {
-    position: fixed;
-    inset: 0;
-    background: var(--cream);
-    z-index: 9998;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 1.5rem;
-    transition: opacity 0.5s ease;
-
-    font-family: 'EB Garamond', 'Noto Serif SC', serif;
-    font-weight: 400; /* 精准改成常规细体 */
-    color: var(--dark);
-  }
-
-  #loader.hidden {
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-
-  .loader-note {
-    font-size: 4rem;
-    animation: spin 1.5s ease-in-out infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(180deg) scale(1.2); }
-    100% { transform: rotate(360deg) scale(1); }
-  }
-
-  .loader-text {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    #about { grid-template-columns: 1fr; }
-    .memories-intro { grid-template-columns: 1fr; }
-    .form-row { grid-template-columns: 1fr; }
-    .memories-wall { column-count: 1; }
-    nav { padding: 1.2rem 1.5rem; }
-    .nav-links { display: none; }
-    section, #about, #characters, #memories, #gallery { padding: 4rem 1.5rem; }
-    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
-    .footer-meta { text-align: center; }
-    .char-sub-layout { grid-template-columns: 1fr; padding: 1.5rem; }
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .memories-wall { column-count: 2; }
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --pink: #f5c8e0;
+    --mint: #b8f0e0;
+    --cream: #fdf8f0;
+    --dark: #1a1410;
+    --muted: #6b5f58;
+    --accent-pink: #e87ab3;
+    --accent-mint: #4ecba0;
+    /* 子页面独立美学变量 */
+    --purple-bg: #ede8f5; 
+    --purple-sub: #f6f0ff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--dark);
+    font-family: 'EB Garamond', 'Noto Serif SC', serif;
+    cursor: none;
+    overflow-x: hidden;
+    transition: background-color 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* CUSTOM CURSOR */
+  #cursor {
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    font-size: 22px;
+    transition: transform 0.1s ease;
+    user-select: none;
+    mix-blend-mode: multiply;
+  }
+
+  #cursor.clicked { transform: translate(-50%, -50%) scale(0.7) rotate(20deg); }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 3rem;
+    mix-blend-mode: multiply;
+  }
+
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--dark); }
+
+  /* 主视图容器的定位基准，防止子元素布局坍塌 */
+  #gateway-view, #hub-view {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  /* GATEWAY VIEW STYLE */
+  #gateway-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .gateway-time {
+    /* 【精准修复】换成细细的古典衬线体 */
+    font-family: 'EB Garamond', 'Noto Serif SC', serif; 
+    font-size: clamp(3.5rem, 8vw, 6.5rem);
+    font-weight: 400; /* 变成常规细体 */
+    color: var(--dark);
+    letter-spacing: 0.05em;
+    cursor: none;
+    user-select: none;
+    transition: color 0.2s, transform 0.1s;
+  }
+  
+  /* MAIN HUB VIEW */
+  #hub-view {
+    display: none; /* 初始隐藏，由时间网关解锁 */
+    flex-direction: column;
+  }
+
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 6rem 2rem 4rem;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    font-family: 'Space Mono', monospace;
+    font-size: 16vw;
+    font-weight: 700;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(232, 122, 179, 0.15);
+    letter-spacing: -0.05em;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-pp-logo {
+    font-size: clamp(80px, 16vw, 200px);
+    line-height: 0.8;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .hero-title {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-align: center;
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 1rem;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-tagline {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    color: var(--muted);
+    text-align: center;
+    margin-top: 3rem;
+    max-width: 600px;
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+  }
+
+  .time-stamp {
+    font-family: 'EB Garamond', 'Noto Serif SC', serif;
+    font-weight: 400; /* 常规细体 */
+    font-size: 20px;  /* 精准把数字字号调小，变得极其清秀 */
+    color: var(--accent-pink);
+    text-align: center;
+    margin-top: 2rem;
+    letter-spacing: 0.1em;
+    position: relative;
+    z-index: 2;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+  }
+
+  /* FLOATING CIRCLES */
+  .circle-motif {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(232, 122, 179, 0.2);
+    pointer-events: none;
+    animation: rotate-slow linear infinite;
+  }
+
+  @keyframes rotate-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* SECTION BASE */
+  section {
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-pink);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--accent-pink);
+    opacity: 0.4;
+  }
+
+  /* ABOUT SECTION */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .about-text h2 {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+  }
+
+  .about-text p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+
+  .about-text p strong {
+    color: var(--dark);
+    font-weight: 500;
+  }
+
+  .structure-box {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 2px;
+    padding: 2rem;
+  }
+
+  .structure-item {
+    padding: 1.2rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .structure-item:last-child { border-bottom: none; }
+
+  .structure-game {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-pink);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .structure-desc {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  .structure-desc em {
+    color: var(--dark);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  /* CHARACTERS */
+  #characters {
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .char-names-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .char-name-trigger {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    color: var(--muted);
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+    padding-bottom: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .char-name-trigger:hover {
+    color: var(--accent-pink);
+    border-bottom-color: var(--accent-pink);
+    transform: translateY(-3px);
+  }
+
+  .char-sub-page {
+    display: none;
+    margin-top: 4rem;
+    animation: subViewFade 0.6s ease both;
+  }
+
+  @keyframes subViewFade {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .char-sub-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    background: white;
+    padding: 3rem;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+  }
+
+  .char-sub-meta h2 {
+    font-size: 3rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+  }
+
+  .char-sub-meta h4 {
+    font-family: 'Space Mono', monospace;
+    color: var(--accent-pink);
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+  }
+
+  .char-sub-meta p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--muted);
+    text-align: justify;
+  }
+
+  .back-to-cast {
+    display: inline-block;
+    margin-top: 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--muted);
+    padding-bottom: 2px;
+  }
+
+  .back-to-cast:hover {
+    color: var(--accent-pink);
+    border-bottom-color: var(--accent-pink);
+  }
+
+  /* MEMORY WALL */
+  #memories {
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .memories-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+    align-items: center;
+  }
+
+  .memories-intro h2 {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  .memories-intro p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .memory-form {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.08);
+    padding: 2.5rem;
+    border-radius: 2px;
+    margin-bottom: 3rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-group label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-family: 'EB Garamond', serif;
+    font-size: 1rem;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 1px;
+    padding: 0.7rem 1rem;
+    background: var(--cream);
+    color: var(--dark);
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: none;
+    resize: vertical;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--accent-pink);
+  }
+
+  .form-group textarea { min-height: 100px; }
+
+  .submit-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: var(--dark);
+    color: var(--cream);
+    border: none;
+    padding: 1rem 2.5rem;
+    cursor: none;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .submit-btn:hover { background: var(--accent-pink); }
+  .submit-btn:active { transform: scale(0.97); }
+
+  .memories-wall {
+    display: block; /* 精准修复：解决文字撕裂断开的布局 Bug */
+    column-count: 3;
+    column-gap: 1.5rem;
+  }
+
+  .memory-card {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+    background: white;
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 1.5rem;
+    position: relative;
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .memory-card::before {
+    content: '♪';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 12px;
+    color: rgba(232, 122, 179, 0.4);
+  }
+
+  .memory-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent-pink);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .memory-role {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(107, 95, 88, 0.5);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.08em;
+  }
+
+  .memory-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .memory-timestamp {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(107, 95, 88, 0.3);
+    margin-top: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .empty-memories {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 4rem;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+
+  /* GALLERY */
+  #gallery {
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    margin-top: 3rem;
+  }
+
+  .gallery-item {
+    aspect-ratio: 4/3;
+    background: #f0ebe4;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    border: 1px solid rgba(0,0,0,0.03);
+    padding: 6px;
+    background: #fff;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .gallery-item:hover img { transform: scale(1.05); }
+
+  .gallery-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: rgba(107, 95, 88, 0.3);
+    text-transform: uppercase;
+    background: var(--cream);
+  }
+
+  .upload-zone {
+    border: 1px dashed rgba(232, 122, 179, 0.4);
+    padding: 3rem;
+    text-align: center;
+    margin-top: 2rem;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: none;
+  }
+
+  .upload-zone:hover,
+  .upload-zone.dragover {
+    border-color: var(--accent-pink);
+    background: rgba(232, 122, 179, 0.04);
+  }
+
+  .upload-zone p {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .upload-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--accent-pink);
+    border: 1px solid var(--accent-pink);
+    padding: 0.6rem 1.5rem;
+    cursor: none;
+    transition: all 0.2s;
+  }
+
+  .upload-btn:hover {
+    background: var(--accent-pink);
+    color: white;
+  }
+
+  #file-input { display: none; }
+
+  /* LIGHTBOX PREVIEW LAYOUT */
+  #lightbox {
+    position: fixed; inset: 0;
+    background: rgba(26,20,16,0.95);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #lightbox img {
+    max-width: 85%; max-height: 85%;
+    object-fit: contain;
+    border: 2px solid rgba(255,255,255,0.1);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding: 4rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+  }
+
+  .footer-meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.8;
+    text-transform: uppercase;
+  }
+
+  /* DIVIDER */
+  .dot-divider {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1rem;
+    color: rgba(232, 122, 179, 0.4);
+    letter-spacing: 0.5em;
+  }
+
+  /* NOTIFICATION */
+  .notif {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--dark);
+    color: var(--cream);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 1rem 1.5rem;
+    z-index: 1000;
+    animation: slideUp 0.3s ease, slideDown 0.3s ease 2.5s forwards;
+    pointer-events: none;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(20px); opacity: 0; }
+  }
+
+  /* MEMORIES COUNT */
+  .memories-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .memories-count span {
+    color: var(--accent-pink);
+    font-weight: 700;
+  }
+
+  /* PAGE LOADING */
+  #loader {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: opacity 0.5s ease;
+
+    /* 【精准修复】把最开场加载界面的数字也换成了细细的古典衬线体 */
+    font-family: 'EB Garamond', 'Noto Serif SC', serif;
+    font-weight: 400; 
+    color: var(--dark);
+  }
+
+  #loader.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .loader-note {
+    font-size: 4rem;
+    animation: spin 1.5s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  .loader-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    #about { grid-template-columns: 1fr; }
+    .memories-intro { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .memories-wall { column-count: 1; }
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    section, #about, #characters, #memories, #gallery { padding: 4rem 1.5rem; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    .footer-meta { text-align: center; }
+    .char-sub-layout { grid-template-columns: 1fr; padding: 1.5rem; }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .memories-wall { column-count: 2; }
+  }
 </style>
 </head>
 <body>
 
 <div id="loader">
-  <div class="loader-note">♪</div>
-  <div class="loader-text">Loading memories...</div>
+  <div class="loader-note">♪</div>
+  <div class="loader-text">Loading memories...</div>
 </div>
 
 <div id="cursor">♪</div>
 
 <main id="gateway-view">
-  <div class="circle-motif" style="width:400px;height:400px;top:15%;animation-duration:25s;"></div>
-  <div class="gateway-time" id="gateway-time">-- : --</div>
+  <div class="circle-motif" style="width:400px;height:400px;top:15%;animation-duration:25s;"></div>
+  <div class="gateway-time" id="gateway-time">-- : --</div>
 </main>
 
 <main id="hub-view">
-  <nav>
-    <div class="nav-logo">PP × feztg × 2026</div>
-    <ul class="nav-links">
-      <li><a href="#about">关于</a></li>
-      <li><a href="#characters" onclick="resetCastBg()">人物</a></li>
-      <li><a href="#memories">记忆墙</a></li>
-      <li><a href="#gallery">相册</a></li>
-    </ul>
-  </nav>
+  <nav>
+    <div class="nav-logo">PP × feztg × 2026</div>
+    <ul class="nav-links">
+      <li><a href="#about">关于</a></li>
+      <li><a href="#characters" onclick="resetCastBg()">人物</a></li>
+      <li><a href="#memories">记忆墙</a></li>
+      <li><a href="#gallery">相册</a></li>
+    </ul>
+  </nav>
 
-  <section id="hero">
-    <div class="hero-bg-text">PP</div>
+  <section id="hero">
+    <div class="hero-bg-text">PP</div>
 
-    <div class="circle-motif" style="width:300px;height:300px;top:10%;right:5%;animation-duration:20s;"></div>
-    <div class="circle-motif" style="width:150px;height:150px;top:60%;left:3%;animation-duration:15s;animation-direction:reverse;"></div>
-    <div class="circle-motif" style="width:80px;height:80px;top:20%;left:15%;animation-duration:12s;"></div>
+    <div class="circle-motif" style="width:300px;height:300px;top:10%;right:5%;animation-duration:20s;"></div>
+    <div class="circle-motif" style="width:150px;height:150px;top:60%;left:3%;animation-duration:15s;animation-direction:reverse;"></div>
+    <div class="circle-motif" style="width:80px;height:80px;top:20%;left:15%;animation-duration:12s;"></div>
 
-    <div class="hero-pp-logo">♪♪</div>
-    <h1 class="hero-title">PURBLE PLACE</h1>
-    <p class="hero-sub">普尔布尔乐园 · Final Version · by tonge</p>
-    <p class="hero-tagline">
-      一个女孩开始在城市各处不断遇见同一个陌生人，<br>
-      而一连串微小的巧合逐渐变得像她在玩的那款游戏。
-    </p>
-    <div class="time-stamp" id="live-time">12 : 20</div>
+    <div class="hero-pp-logo">♪♪</div>
+    <h1 class="hero-title">PURBLE PLACE</h1>
+    <p class="hero-sub">普尔布尔乐园 · Final Version · by tonge</p>
+    <p class="hero-tagline">
+      一个女孩开始在城市各处不断遇见同一个陌生人，<br>
+      而一连串微小的巧合逐渐变得像她在玩的那款游戏。
+    </p>
+    <div class="time-stamp" id="live-time">12 : 20</div>
 
-    <div class="scroll-hint">
-      <span>向下</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
+    <div class="scroll-hint">
+      <span>向下</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
 
-  <div class="dot-divider">· · ·</div>
+  <div class="dot-divider">· · ·</div>
 
-  <div id="about">
-    <div class="about-text">
-      <div class="section-label">关于这部片子</div>
-      <h2>当偶然<br>逐渐呈现出<br>结构</h2>
-      <p>人总会在随机事件中寻找意义。一次偶然的相遇、某个重复出现的物件、或一连串巧合，都可能在某一刻开始像一种<strong>模式</strong>。</p>
-      <p>这个故事受到电脑游戏 Purble Place 的启发——在游戏中，玩家需要通过翻牌、组合和猜测来寻找隐藏的规律。</p>
-      <p>意义往往并不直接存在于事件本身，而是在人们的<strong>观看、注意与连接</strong>之中逐渐形成。</p>
-    </div>
+  <div id="about">
+    <div class="about-text">
+      <div class="section-label">关于这部片子</div>
+      <h2>当偶然<br>逐渐呈现出<br>结构</h2>
+      <p>人总会在随机事件中寻找意义。一次偶然的相遇、某个重复出现的物件、或一连串巧合，都可能在某一刻开始像一种<strong>模式</strong>。</p>
+      <p>这个故事受到电脑游戏 Purble Place 的启发——在游戏中，玩家需要通过翻牌、组合和猜测来寻找隐藏的规律。</p>
+      <p>意义往往并不直接存在于事件本身，而是在人们的<strong>观看、注意与连接</strong>之中逐渐形成。</p>
+    </div>
 
-    <div>
-      <div class="section-label">叙事结构</div>
-      <div class="structure-box">
-        <div class="structure-item">
-          <div class="structure-game">Purble Pairs</div>
-          <div class="structure-desc">
-            matching cards →<br>
-            <em>莱尔在城市中反复看到 Seica</em>
-          </div>
-        </div>
-        <div class="structure-item">
-          <div class="structure-game">Comfy Cakes</div>
-          <div class="structure-desc">
-            building cakes →<br>
-            <em>生日、面包上的蜡烛、Cake Party</em>
-          </div>
-        </div>
-        <div class="structure-item">
-          <div class="structure-game">Purble Shop</div>
-          <div class="structure-desc">
-            recognizing faces →<br>
-            <em>观察人物特征、在人群中识别 Seica</em>
-          </div>
-        </div>
-        <div class="structure-item" style="border-bottom:none;">
-          <div class="structure-game">References</div>
-          <div class="structure-desc">
-            <em>Aftersun · Elephant · L'Homme à la Valise</em>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    <div>
+      <div class="section-label">叙事结构</div>
+      <div class="structure-box">
+        <div class="structure-item">
+          <div class="structure-game">Purble Pairs</div>
+          <div class="structure-desc">
+            matching cards →<br>
+            <em>莱尔在城市中反复看到 Seica</em>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-game">Comfy Cakes</div>
+          <div class="structure-desc">
+            building cakes →<br>
+            <em>生日、面包上的蜡烛、Cake Party</em>
+          </div>
+        </div>
+        <div class="structure-item">
+          <div class="structure-game">Purble Shop</div>
+          <div class="structure-desc">
+            recognizing faces →<br>
+            <em>观察人物特征、在人群中识别 Seica</em>
+          </div>
+        </div>
+        <div class="structure-item" style="border-bottom:none;">
+          <div class="structure-game">References</div>
+          <div class="structure-desc">
+            <em>Aftersun · Elephant · L'Homme à la Valise</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <div class="dot-divider">· · ·</div>
+  <div class="dot-divider">· · ·</div>
 
-  <section id="characters">
-    <div class="section-label">人物名录</div>
-    
-    <div class="char-names-panel" id="char-names-panel">
-      <div class="char-name-trigger" onclick="jumpToCharSub('lyl')">莱尔 / LYL</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('seica')">世嘉 / SEICA</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('shina')">希娜 / SHINA</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('zefio')">小弗 / ZEFIO</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('tatty')">塔迪 / TATTY</div>
-      <div class="char-name-trigger" onclick="jumpToCharSub('alyssa')">小 A / ALYSSA</div>
-    </div>
+  <section id="characters">
+    <div class="section-label">人物名录</div>
+    
+    <div class="char-names-panel" id="char-names-panel">
+      <div class="char-name-trigger" onclick="jumpToCharSub('lyl')">莱尔 / LYL</div>
+      <div class="char-name-trigger" onclick="jumpToCharSub('seica')">世嘉 / SEICA</div>
+      <div class="char-name-trigger" onclick="jumpToCharSub('shina')">希娜 / SHINA</div>
+      <div class="char-name-trigger" onclick="jumpToCharSub('zefio')">小弗 / ZEFIO</div>
+      <div class="char-name-trigger" onclick="jumpToCharSub('tatty')">塔迪 / TATTY</div>
+      <div class="char-name-trigger" onclick="jumpToCharSub('alyssa')">小 A / ALYSSA</div>
+    </div>
 
-    <div class="char-sub-page" id="char-sub-page">
-      
-      <div class="char-sub-layout" id="sub-lyl" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 01</h4>
-          <h2>LYL / 莱尔</h2>
-          <p>喜欢 Beach House 和 Fiona Apple。正在准备 ABCW 考试。晚上帮朋友打碟赚外快。表面需要稳定，内心渴望未知的降临。拥有在无序日常中捕捉特定声频的敏锐本能。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600" alt=""></div>
-      </div>
+    <div class="char-sub-page" id="char-sub-page">
+      
+      <div class="char-sub-layout" id="sub-lyl" style="display:none;">
+        <div class="char-sub-meta">
+          <h4>CAST FILE 01</h4>
+          <h2>LYL / 莱尔</h2>
+          <p>喜欢 Beach House 和 Fiona Apple。正在准备 ABCW 考试。晚上帮朋友打碟赚外快。表面需要稳定，内心渴望未知的降临。拥有在无序日常中捕捉特定声频的敏锐本能。</p>
+          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600" alt=""></div>
+      </div>
 
-      <div class="char-sub-layout" id="sub-seica" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 02</h4>
-          <h2>SEICA / 世嘉</h2>
-          <p>电影中的幽灵。运行游戏直播，在中午出生。第三章之前从不展示正脸。希冀在人群密集交织的自动扶梯上被骤然认出，却总是化为像素散落在十二点二十分的日光下。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600" alt=""></div>
-      </div>
+      <div class="char-sub-layout" id="sub-seica" style="display:none;">
+        <div class="char-sub-meta">
+          <h4>CAST FILE 02</h4>
+          <h2>SEICA / 世嘉</h2>
+          <p>电影中的幽灵。运行游戏直播，在中午出生。第三章之前从不展示正脸。希冀在人群密集交织的自动扶梯上被骤然认出，却总是化为像素散落在十二点二十分的日光下。</p>
+          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600" alt=""></div>
+      </div>
 
-      <div class="char-sub-layout" id="sub-shina" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 03</h4>
-          <h2>SHINA / 希娜</h2>
-          <p>乒乓球高手（横板）。擅长神秘学与塔罗牌阵。因爱吃香蕉船在咖啡馆做兼职，留着池袋西口公园式的张扬发型。笃信这世界上没有任何一片叶子会无缘无故掉落。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600" alt=""></div>
-      </div>
+      <div class="char-sub-layout" id="sub-shina" style="display:none;">
+        <div class="char-sub-meta">
+          <h4>CAST FILE 03</h4>
+          <h2>SHINA / 希娜</h2>
+          <p>乒乓球高手（横板）。擅长神秘学与塔罗牌阵。因爱吃香蕉船在咖啡馆做兼职，留着池袋西口公园式的张扬发型。笃信这世界上没有任何一片叶子会无缘无故掉落。</p>
+          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600" alt=""></div>
+      </div>
 
-      <div class="char-sub-layout" id="sub-zefio" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 04</h4>
-          <h2>ZEFIO / 小弗</h2>
-          <p>自由、轻盈且不被定义。踩着板滑过街区，涂抹斑斓而跳跃的单色美甲。反复观看《希德姐妹帮》，她的话语像夏日汽水般充满不受拘束的无秩序热忱。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600" alt=""></div>
-      </div>
+      <div class="char-sub-layout" id="sub-zefio" style="display:none;">
+        <div class="char-sub-meta">
+          <h4>CAST FILE 04</h4>
+          <h2>ZEFIO / 小弗</h2>
+          <p>自由、轻盈且不被定义。踩着板滑过街区，涂抹斑斓而跳跃的单色美甲。反复观看《希德姐妹帮》，她的话语像夏日汽水般充满不受拘束的无秩序热忱。</p>
+          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600" alt=""></div>
+      </div>
 
-      <div class="char-sub-layout" id="sub-tatty" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 05</h4>
-          <h2>TATTY / 塔迪</h2>
-          <p>思维散漫但言语极尽犀利。狂热的三丽鸥专家。爱喝加了跳跳糖的冰镇酸奶，最近因为迷上了某个叫“宇宙”的男孩，开始在夜晚寂静的阳台上练习不知名的歌谣。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600" alt=""></div>
-      </div>
+      <div class="char-sub-layout" id="sub-tatty" style="display:none;">
+        <div class="char-sub-meta">
+          <h4>CAST FILE 05</h4>
+          <h2>TATTY / 塔迪</h2>
+          <p>思维散漫但言语极尽犀利。狂热的三丽鸥专家。爱喝加了跳跳糖的冰镇酸奶，最近因为迷上了某个叫“宇宙”的男孩，开始在夜晚寂静的阳台上练习不知名的歌谣。</p>
+          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600" alt=""></div>
+      </div>
 
-      <div class="char-sub-layout" id="sub-alyssa" style="display:none;">
-        <div class="char-sub-meta">
-          <h4>CAST FILE 06</h4>
-          <h2>ALYSSA / 小 A</h2>
-          <p>莱尔在这座漂泊都市遇见的第一个温暖锚点。曾用蓝色的圆珠笔，极具仪式感地在莱尔摔伤的膝盖创口贴上写下一行娟秀的小字：good girl still here。</p>
-          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
-        </div>
-        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600" alt=""></div>
-      </div>
+      <div class="char-sub-layout" id="sub-alyssa" style="display:none;">
+        <div class="char-sub-meta">
+          <h4>CAST FILE 06</h4>
+          <h2>ALYSSA / 小 A</h2>
+          <p>莱尔在这座漂泊都市遇见的第一个温暖锚点。曾用蓝色的圆珠笔，极具仪式感地在莱尔摔伤的膝盖创口贴上写下一行娟秀的小字：good girl still here。</p>
+          <span class="back-to-cast" onclick="exitCharSub()">[ 返回人物名录 ]</span>
+        </div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600" alt=""></div>
+      </div>
 
-    </div>
-  </section>
+    </div>
+  </section>
 
-  <div class="dot-divider">· · ·</div>
+  <div class="dot-divider">· · ·</div>
 
-  <section id="memories">
-    <div class="section-label">记忆墙</div>
-    <div class="memories-intro">
-      <h2>留下你的<br>拍摄记忆</h2>
-      <p>每一次相遇都是偶然，也都是某种 pattern 的一部分。<br>在这里留下你在 Purble Place 的记忆——某个场景、某句台词、某个瞬间。</p>
-    </div>
+  <section id="memories">
+    <div class="section-label">记忆墙</div>
+    <div class="memories-intro">
+      <h2>留下你的<br>拍摄记忆</h2>
+      <p>每一次相遇都是偶然，也都是某种 pattern 的一部分。<br>在这里留下你在 Purble Place 的记忆——某个场景、某句台词、某个瞬间。</p>
+    </div>
 
-    <div class="memory-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label>你的名字</label>
-          <input type="text" id="mem-name" placeholder="莱尔 / Seica / ...">
-        </div>
-        <div class="form-group">
-          <label>你在剧组的角色</label>
-          <input type="text" id="mem-role" placeholder="演员 / 导演 / 摄影 / 观众 ...">
-        </div>
-      </div>
-      <div class="form-group" style="margin-bottom:1.5rem;">
-        <label>你的记忆</label>
-        <textarea id="mem-text" placeholder="某个场景、某句台词、某个你不会忘记的瞬间..."></textarea>
-      </div>
-      <button class="submit-btn" onclick="submitMemory()">留下记忆 ♪</button>
-    </div>
+    <div class="memory-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>你的名字</label>
+          <input type="text" id="mem-name" placeholder="莱尔 / Seica / ...">
+        </div>
+        <div class="form-group">
+          <label>你在剧组的角色</label>
+          <input type="text" id="mem-role" placeholder="演员 / 导演 / 摄影 / 观众 ...">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:1.5rem;">
+        <label>你的记忆</label>
+        <textarea id="mem-text" placeholder="某个场景、某句台词、某个你不会忘记的瞬间..."></textarea>
+      </div>
+      <button class="submit-btn" onclick="submitMemory()">留下记忆 ♪</button>
+    </div>
 
-    <div class="memories-count">共 <span id="mem-count">0</span> 条记忆被保存</div>
-    <div class="memories-wall" id="memories-wall">
-      <div class="empty-memories">还没有记忆——成为第一个留下记忆的人。</div>
-    </div>
-  </section>
+    <div class="memories-count">共 <span id="mem-count">0</span> 条记忆被保存</div>
+    <div class="memories-wall" id="memories-wall">
+      <div class="empty-memories">还没有记忆——成为第一个留下记忆的人。</div>
+    </div>
+  </section>
 
-  <div class="dot-divider">· · ·</div>
+  <div class="dot-divider">· · ·</div>
 
-  <section id="gallery">
-    <div class="section-label">拍摄相册</div>
-    <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:3rem;">
-      <h2 style="font-family:'EB Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;line-height:1.2;">i saw you<br><em>will you look back?</em></h2>
-      <p style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--muted);text-align:right;text-transform:uppercase;">上传拍摄照片<br>留存美好记录</p>
-    </div>
+  <section id="gallery">
+    <div class="section-label">拍摄相册</div>
+    <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:3rem;">
+      <h2 style="font-family:'EB Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;line-height:1.2;">i saw you<br><em>will you look back?</em></h2>
+      <p style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--muted);text-align:right;text-transform:uppercase;">上传拍摄照片<br>留存美好记录</p>
+    </div>
 
-    <div class="gallery-grid" id="gallery-grid">
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800" alt=""><div class="gallery-placeholder" style="display:none;">便利店 · 12:20</div></div>
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt=""><div class="gallery-placeholder" style="display:none;">扶梯擦肩</div></div>
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800" alt=""><div class="gallery-placeholder" style="display:none;">电梯 · The End</div></div>
-    </div>
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800" alt=""><div class="gallery-placeholder" style="display:none;">便利店 · 12:20</div></div>
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt=""><div class="gallery-placeholder" style="display:none;">扶梯擦肩</div></div>
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800" alt=""><div class="gallery-placeholder" style="display:none;">电梯 · The End</div></div>
+    </div>
 
-    <div class="upload-zone" id="upload-zone">
-      <p>拖放照片到此处，或点击选择文件</p>
-      <button class="upload-btn" onclick="document.getElementById('file-input').click()">选择照片</button>
-      <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
-    </div>
-  </section>
+    <div class="upload-zone" id="upload-zone">
+      <p>拖放照片到此处，或点击选择文件</p>
+      <button class="upload-btn" onclick="document.getElementById('file-input').click()">选择照片</button>
+      <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
+    </div>
+  </section>
 
-  <div class="dot-divider">· · ·</div>
+  <div class="dot-divider">· · ·</div>
 
-  <footer>
-    <div>
-      <div class="footer-title">Purble Place ♪</div>
-      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;color:var(--muted);margin-top:0.5rem;">普尔布尔乐园</div>
-    </div>
-    <div class="footer-meta">
-      Final Version · by tonge<br>
-      feztg × 2026<br>
-      <span style="color:var(--accent-pink);">12 : 20</span>
-    </div>
-  </footer>
+  <footer>
+    <div>
+      <div class="footer-title">Purble Place ♪</div>
+      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;color:var(--muted);margin-top:0.5rem;">普尔布尔乐园</div>
+    </div>
+    <div class="footer-meta">
+      Final Version · by tonge<br>
+      feztg × 2026<br>
+      <span style="color:var(--accent-pink);">12 : 20</span>
+    </div>
+  </footer>
 </main>
 
 <div id="lightbox" onclick="closeLightbox()">
-  <img id="lightbox-img" src="" alt="">
+  <img id="lightbox-img" src="" alt="">
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // Supabase 数据库配置 (解开死锁)
-  const SUPABASE_URL = 'https://pdeczhezwwvjrsdonsjr.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_-FYLgg2EOp_87Z7fa_JrGQ_EaaVQzve';
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // Supabase 数据库配置 (解开死锁)
+  const SUPABASE_URL = 'https://pdeczhezwwvjrsdonsjr.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_-FYLgg2EOp_87Z7fa_JrGQ_EaaVQzve';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // 【核心防死锁优化】超级安全的 Loader 强关处理器
-  function dismissLoader() {
-    const loader = document.getElementById('loader');
-    if (loader && !loader.classList.contains('hidden')) {
-      loader.classList.add('hidden');
-    }
-  }
-  window.addEventListener('load', dismissLoader);
-  setTimeout(dismissLoader, 1000); 
+  // 【核心防死锁优化】超级安全的 Loader 强关处理器
+  function dismissLoader() {
+    const loader = document.getElementById('loader');
+    if (loader && !loader.classList.contains('hidden')) {
+      loader.classList.add('hidden');
+    }
+  }
+  window.addEventListener('load', dismissLoader);
+  setTimeout(dismissLoader, 1000); 
 
-  // CURSOR
-  const cursor = document.getElementById('cursor');
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-  });
-  document.addEventListener('mousedown', () => cursor.classList.add('clicked'));
-  document.addEventListener('mouseup', () => cursor.classList.remove('clicked'));
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.addEventListener('mousedown', () => cursor.classList.add('clicked'));
+  document.addEventListener('mouseup', () => cursor.classList.remove('clicked'));
 
-  // TIME GATEWAY INTERACTION
-  const gatewayView = document.getElementById('gateway-view');
-  const hubView = document.getElementById('hub-view');
-  const gatewayTime = document.getElementById('gateway-time');
-  let gateInterval;
+  // TIME GATEWAY INTERACTION
+  const gatewayView = document.getElementById('gateway-view');
+  const hubView = document.getElementById('hub-view');
+  const gatewayTime = document.getElementById('gateway-time');
+  let gateInterval;
 
-  function runTimeGateway() {
-      gateInterval = setInterval(() => {
-        // ——【核心概率修复逻辑】——
-        // 产生一个 0 到 1 之间的随机数。如果小于 0.15（即 15% 的概率），我们直接人工让它闪现出 12:20
-        if (Math.random() < 0.15) {
-          gatewayTime.textContent = "12 : 20";
-          gatewayTime.setAttribute('data-time', '12:20');
-        } else {
-          // 剩下 85% 的情况，它依然高冷地跑普通的纯随机时间
-          let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
-          let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
-          
-          // 兜底防御：防止极小概率下正常随机真的撞上 12:20 导致逻辑打架，强行让它变 12:21
-          if (h === "12" && m === "20") m = "21"; 
-          
-          gatewayTime.textContent = `${h} : ${m}`;
-          gatewayTime.setAttribute('data-time', 'wrong');
-        }
-      }, 1000); // 保持你改好的 1 秒慢速跳动
-    }
+  function runTimeGateway() {
+      gateInterval = setInterval(() => {
+        // ——【核心概率修复逻辑】——
+        // 产生一个 0 到 1 之间的随机数。如果小于 0.15（即 15% 的概率），我们直接人工让它闪现出 12:20
+        if (Math.random() < 0.15) {
+          gatewayTime.textContent = "12 : 20";
+          gatewayTime.setAttribute('data-time', '12:20');
+        } else {
+          // 剩下 85% 的情况，它依然高冷地跑普通的纯随机时间
+          let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+          let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+           
+          // 兜底防御：防止极小概率下正常随机真的撞上 12:20 导致逻辑打架，强行让它变 12:21
+          if (h === "12" && m === "20") m = "21"; 
+           
+          gatewayTime.textContent = `${h} : ${m}`;
+          gatewayTime.setAttribute('data-time', 'wrong');
+        }
+      }, 1000); // 保持你改好的 1 秒慢速跳动
+    }
 
-  gatewayTime.addEventListener('click', () => {
-    if (gatewayTime.textContent === "12 : 20") {
-      clearInterval(gateInterval);
-      gatewayView.style.display = 'none';
-      hubView.style.display = 'flex';
-      initScrollAnimations();
-      showNotif('Gate Unlocked. 欢迎进入乐园 ♪');
-    } else {
-      gatewayTime.style.transform = 'scale(0.95)';
-      setTimeout(() => gatewayTime.style.transform = 'scale(1)', 100);
-    }
-  });
+  gatewayTime.addEventListener('click', () => {
+    if (gatewayTime.textContent === "12 : 20") {
+      clearInterval(gateInterval);
+      gatewayView.style.display = 'none';
+      hubView.style.display = 'flex';
+      initScrollAnimations();
+      showNotif('Gate Unlocked. 欢迎进入乐园 ♪');
+    } else {
+      gatewayTime.style.transform = 'scale(0.95)';
+      setTimeout(() => gatewayTime.style.transform = 'scale(1)', 100);
+    }
+  });
 
-  function startLiveTime() {
-    function update() {
-      const now = new Date();
-      const timeString = now.getHours().toString().padStart(2, '0') + ' : ' + 
-                         now.getMinutes().toString().padStart(2, '0');
-      const el = document.getElementById('live-time');
-      if(el) el.textContent = timeString;
-    }
-    setInterval(update, 1000);
-    update();
-  }
+  // CHARACTERS SUB-ROUTING
+  function jumpToCharSub(id) {
+    document.body.style.backgroundColor = 'var(--purple-bg)';
+    document.getElementById('char-names-panel').style.display = 'none';
+    document.getElementById('char-sub-page').style.display = 'block';
+    
+    document.querySelectorAll('.char-sub-layout').forEach(box => box.style.display = 'none');
+    const targetBox = document.getElementById(`sub-${id}`);
+    if(targetBox) targetBox.style.display = 'grid';
+    
+    document.getElementById('characters').scrollIntoView({ behavior: 'smooth' });
+  }
 
-  // CHARACTERS SUB-ROUTING
-  function jumpToCharSub(id) {
-    document.body.style.backgroundColor = 'var(--purple-bg)';
-    document.getElementById('char-names-panel').style.display = 'none';
-    document.getElementById('char-sub-page').style.display = 'block';
-    
-    document.querySelectorAll('.char-sub-layout').forEach(box => box.style.display = 'none');
-    const targetBox = document.getElementById(`sub-${id}`);
-    if(targetBox) targetBox.style.display = 'grid';
-    
-    document.getElementById('characters').scrollIntoView({ behavior: 'smooth' });
-  }
+  function exitCharSub() {
+    document.body.style.backgroundColor = 'var(--cream)';
+    document.getElementById('char-sub-page').style.display = 'none';
+    document.getElementById('char-names-panel').style.display = 'flex';
+    document.getElementById('characters').scrollIntoView({ behavior: 'smooth' });
+  }
+  
+  function resetCastBg() {
+    exitCharSub();
+  }
 
-  function exitCharSub() {
-    document.body.style.backgroundColor = 'var(--cream)';
-    document.getElementById('char-sub-page').style.display = 'none';
-    document.getElementById('char-names-panel').style.display = 'flex';
-    document.getElementById('characters').scrollIntoView({ behavior: 'smooth' });
-  }
-  
-  function resetCastBg() {
-    exitCharSub();
-  }
+  // LIGHTBOX SYSTEM
+  function openLightbox(element) {
+    const imgSrc = element.querySelector('img').src;
+    const lb = document.getElementById('lightbox');
+    document.getElementById('lightbox-img').src = imgSrc;
+    lb.style.display = 'flex';
+    setTimeout(() => lb.style.opacity = '1', 5);
+  }
 
-  // LIGHTBOX SYSTEM
-  function openLightbox(element) {
-    const imgSrc = element.querySelector('img').src;
-    const lb = document.getElementById('lightbox');
-    document.getElementById('lightbox-img').src = imgSrc;
-    lb.style.display = 'flex';
-    setTimeout(() => lb.style.opacity = '1', 5);
-  }
+  function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    lb.style.opacity = '0';
+    setTimeout(() => lb.style.display = 'none', 300);
+  }
 
-  function closeLightbox() {
-    const lb = document.getElementById('lightbox');
-    lb.style.opacity = '0';
-    setTimeout(() => lb.style.display = 'none', 300);
-  }
+  // STORAGE KEY
+  const MEMORIES_KEY = 'purble_place_memories';
+  const GALLERY_KEY = 'purble_place_gallery';
 
-  // STORAGE KEY
-  const MEMORIES_KEY = 'purble_place_memories';
-  const GALLERY_KEY = 'purble_place_gallery';
+  // MEMORIES
+  function getMemories() {
+    try {
+      return JSON.parse(localStorage.getItem(MEMORIES_KEY)) || [];
+    } catch { return []; }
+  }
 
-  // MEMORIES
-  function getMemories() {
-    try {
-      return JSON.parse(localStorage.getItem(MEMORIES_KEY)) || [];
-    } catch { return []; }
-  }
+  function saveMemory(m) {
+    const memories = getMemories();
+    memories.unshift(m);
+    localStorage.setItem(MEMORIES_KEY, JSON.stringify(memories));
+    return memories;
+  }
 
-  function saveMemory(m) {
-    const memories = getMemories();
-    memories.unshift(m);
-    localStorage.setItem(MEMORIES_KEY, JSON.stringify(memories));
-    return memories;
-  }
+  function renderMemories() {
+    const memories = getMemories();
+    const wall = document.getElementById('memories-wall');
+    const countEl = document.getElementById('mem-count');
+    if(countEl) countEl.textContent = memories.length;
 
-  function renderMemories() {
-    const memories = getMemories();
-    const wall = document.getElementById('memories-wall');
-    const countEl = document.getElementById('mem-count');
-    if(countEl) countEl.textContent = memories.length;
+    if (memories.length === 0) {
+      wall.innerHTML = '<div class="empty-memories">还没有记忆——成为第一个留下记忆的人。</div>';
+      return;
+    }
 
-    if (memories.length === 0) {
-      wall.innerHTML = '<div class="empty-memories">还没有记忆——成为第一个留下记忆的人。</div>';
-      return;
-    }
+    wall.innerHTML = memories.map(m => `
+      <div class="memory-card">
+        <div class="memory-name">${escapeHtml(m.name) || '匿名'}</div>
+        ${m.role ? `<div class="memory-role">${escapeHtml(m.role)}</div>` : ''}
+        <div class="memory-text">${escapeHtml(m.text)}</div>
+        <div class="memory-timestamp">${m.date}</div>
+      </div>
+    `).join('');
+  }
 
-    wall.innerHTML = memories.map(m => `
-      <div class="memory-card">
-        <div class="memory-name">${escapeHtml(m.name) || '匿名'}</div>
-        ${m.role ? `<div class="memory-role">${escapeHtml(m.role)}</div>` : ''}
-        <div class="memory-text">${escapeHtml(m.text)}</div>
-        <div class="memory-timestamp">${m.date}</div>
-      </div>
-    `).join('');
-  }
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str || ''));
+    return div.innerHTML;
+  }
 
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.appendChild(document.createTextNode(str || ''));
-    return div.innerHTML;
-  }
+  function submitMemory() {
+    const name = document.getElementById('mem-name').value.trim();
+    const role = document.getElementById('mem-role').value.trim();
+    const text = document.getElementById('mem-text').value.trim();
 
-  function submitMemory() {
-    const name = document.getElementById('mem-name').value.trim();
-    const role = document.getElementById('mem-role').value.trim();
-    const text = document.getElementById('mem-text').value.trim();
+    if (!text) {
+      showNotif('请写下你的记忆 ♪');
+      return;
+    }
 
-    if (!text) {
-      showNotif('请写下你的记忆 ♪');
-      return;
-    }
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
-    const now = new Date();
-    const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    saveMemory({ name, role, text, date: dateStr });
+    document.getElementById('mem-name').value = '';
+    document.getElementById('mem-role').value = '';
+    document.getElementById('mem-text').value = '';
+    renderMemories();
+    showNotif('记忆已保存 ♪');
+  }
 
-    saveMemory({ name, role, text, date: dateStr });
-    document.getElementById('mem-name').value = '';
-    document.getElementById('mem-role').value = '';
-    document.getElementById('mem-text').value = '';
-    renderMemories();
-    showNotif('记忆已保存 ♪');
-  }
+  // GALLERY
+  function getGallery() {
+    try {
+      return JSON.parse(localStorage.getItem(GALLERY_KEY)) || [];
+    } catch { return []; }
+  }
 
-  // GALLERY
-  function getGallery() {
-    try {
-      return JSON.parse(localStorage.getItem(GALLERY_KEY)) || [];
-    } catch { return []; }
-  }
+  function handleFiles(files) {
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const gallery = getGallery();
+        gallery.unshift({ src: e.target.result, name: file.name, date: new Date().toLocaleDateString('zh-CN') });
+        localStorage.setItem(GALLERY_KEY, JSON.stringify(gallery));
+        renderGallery();
+        showNotif('照片已上传 ♪');
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
-  function handleFiles(files) {
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const gallery = getGallery();
-        gallery.unshift({ src: e.target.result, name: file.name, date: new Date().toLocaleDateString('zh-CN') });
-        localStorage.setItem(GALLERY_KEY, JSON.stringify(gallery));
-        renderGallery();
-        showNotif('照片已上传 ♪');
-      };
-      reader.readAsDataURL(file);
-    });
-  }
+  function renderGallery() {
+    const gallery = getGallery();
+    const grid = document.getElementById('gallery-grid');
+    if(!grid) return;
+    
+    const baseItemsHTML = `
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800" alt=""><div class="gallery-placeholder" style="display:none;">便利店 · 12:20</div></div>
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt=""><div class="gallery-placeholder" style="display:none;">扶梯擦肩</div></div>
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800" alt=""><div class="gallery-placeholder" style="display:none;">电梯 · The End</div></div>
+    `;
+    
+    const uploadedHTML = gallery.map(item => `
+      <div class="gallery-item uploaded" onclick="openLightbox(this)">
+        <img src="${item.src}" alt="${item.name}" loading="lazy">
+      </div>
+    `).join('');
 
-  function renderGallery() {
-    const gallery = getGallery();
-    const grid = document.getElementById('gallery-grid');
-    if(!grid) return;
-    
-    const baseItemsHTML = `
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800" alt=""><div class="gallery-placeholder" style="display:none;">便利店 · 12:20</div></div>
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt=""><div class="gallery-placeholder" style="display:none;">扶梯擦肩</div></div>
-      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800" alt=""><div class="gallery-placeholder" style="display:none;">电梯 · The End</div></div>
-    `;
-    
-    const uploadedHTML = gallery.map(item => `
-      <div class="gallery-item uploaded" onclick="openLightbox(this)">
-        <img src="${item.src}" alt="${item.name}" loading="lazy">
-      </div>
-    `).join('');
+    grid.innerHTML = uploadedHTML + baseItemsHTML;
+  }
 
-    grid.innerHTML = uploadedHTML + baseItemsHTML;
-  }
+  // DRAG & DROP
+  const uploadZone = document.getElementById('upload-zone');
+  if(uploadZone) {
+    uploadZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+    uploadZone.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+  }
 
-  // DRAG & DROP
-  const uploadZone = document.getElementById('upload-zone');
-  if(uploadZone) {
-    uploadZone.addEventListener('dragover', e => {
-      e.preventDefault();
-      uploadZone.classList.add('dragover');
-    });
-    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-    uploadZone.addEventListener('drop', e => {
-      e.preventDefault();
-      uploadZone.classList.remove('dragover');
-      handleFiles(e.dataTransfer.files);
-    });
-  }
+  // NOTIFICATION
+  function showNotif(msg) {
+    const existing = document.querySelector('.notif');
+    if (existing) existing.remove();
+    const notif = document.createElement('div');
+    notif.className = 'notif';
+    notif.textContent = msg;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+  }
 
-  // NOTIFICATION
-  function showNotif(msg) {
-    const existing = document.querySelector('.notif');
-    if (existing) existing.remove();
-    const notif = document.createElement('div');
-    notif.className = 'notif';
-    notif.textContent = msg;
-    document.body.appendChild(notif);
-    setTimeout(() => notif.remove(), 3000);
-  }
+  // GLOBAL ANIMATIONS INITIALIZER
+  function initScrollAnimations() {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.05 });
 
-  // GLOBAL ANIMATIONS INITIALIZER
-  function initScrollAnimations() {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, { threshold: 0.05 });
+    document.querySelectorAll('.structure-item, .memory-form, .char-name-trigger').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  }
 
-    document.querySelectorAll('.structure-item, .memory-form, .char-name-trigger').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(20px)';
-      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-      observer.observe(el);
-    });
-  }
-
-  // RUNTIME EXECUTIONS
-  runTimeGateway();
-  renderMemories();
-  renderGallery();
+  // RUNTIME EXECUTIONS
+  runTimeGateway();
+  renderMemories();
+  renderGallery();
 </script>
 </body>
 </html>
