@@ -1137,18 +1137,12 @@
         let h = Math.floor(Math.random() * 24).toString().padStart(2, '0');
         let m = Math.floor(Math.random() * 60).toString().padStart(2, '0');
         
-        if (Math.random() > 0.2) {
+        gatewayTime.textContent = `${h} : ${m}`;
+  
+        if (h === "12" && m === "20") { 
           gatewayTime.setAttribute('data-time', '12:20');
-          
-          let fakeH = Math.floor(Math.random() * 24).toString().padStart(2, '0');
-          let fakeM = Math.floor(Math.random() * 60).toString().padStart(2, '0');
-          if (fakeH === "12" && fakeM === "20") fakeM = "21"; 
-          gatewayTime.textContent = `${fakeH} : ${fakeM}`;
         } else {
           gatewayTime.setAttribute('data-time', 'wrong');
-          
-          if (h === "12" && m === "20") m = "21"; 
-          gatewayTime.textContent = `${h} : ${m}`;
         }
       }, 1000);
     }
