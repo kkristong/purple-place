@@ -15,6 +15,9 @@
     --accent-pink: #e87ab3;
     --light-gray: #fcfbfa;
     --border-color: rgba(26, 20, 16, 0.08);
+    /* 核心改动：全面更名为 purble 变量 */
+    --purble-bg: #ede8f5; 
+    --purble-sub: #f6f0ff;
   }
 
   body {
@@ -22,7 +25,7 @@
     color: var(--dark);
     font-family: 'EB Garamond', 'Noto Serif SC', serif;
     cursor: none;
-    overflow: hidden; /* 锁死全局大窗口，全靠各子系统容器内部呼吸 */
+    overflow: hidden; /* 锁死全局大窗口，全靠各子系统容器内部独立滚动 */
   }
 
   /* CUSTOM CURSOR */
@@ -114,13 +117,12 @@
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background: var(--white);
-    overflow-y: auto; /* 允许各自视窗内部拥有独立滚动逻辑 */
+    overflow-y: auto; 
     display: none; 
   }
 
-  /* ==================== 首页双层滚动专属排版 ==================== */
+  /* 首页双层滚动专属排版 */
   #view-home {
-    /* 首页内部容器通过滚动展示两层设计 */
     scroll-behavior: smooth;
   }
 
@@ -147,7 +149,7 @@
     50% { transform: translateY(-6px); }
   }
 
-  /* 首页第二页：往下滑动后的粉色便利贴层 */
+  /* 首页第二页：包含粉色便利贴与星星落款 */
   .home-screen-second {
     width: 100%;
     min-height: 100vh;
@@ -155,7 +157,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 6rem 2rem 4rem;
+    padding: 7rem 2rem 4rem;
   }
 
   .hero-logline-img {
@@ -163,16 +165,21 @@
     width: 100%;
     height: auto;
     mix-blend-mode: multiply;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
-  /* ========================================================== */
+  .hero-star-logo {
+    height: 70px;
+    width: auto;
+    mix-blend-mode: multiply;
+    margin-bottom: 1rem;
+  }
 
   /* 子页面通用内部包裹层 */
   .sub-view-content {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 8rem 3rem 6rem; /* 增加顶部留白防止被透明导航挡住 */
+    padding: 8rem 3rem 6rem; 
     animation: pageFadeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) both;
   }
 
@@ -493,10 +500,10 @@
   <div class="gateway-time" id="gateway-time">-- : --</div>
 </main>
 
-<!-- 解锁后的视窗容器 -->
+<!-- 解锁后的视窗总线容器 -->
 <main id="hub-view">
   
-  <!-- 全局顶部固定手写导航栏 -->
+  <!-- 全局顶部固定导航 -->
   <nav>
     <ul class="nav-links-images">
       <li><a href="javascript:void(0)" onclick="switchView('view-pattern')"><img src="https://i.ibb.co/TDCJZhGN/Pattern.png" alt="Pattern"></a></li>
@@ -508,15 +515,17 @@
     </ul>
   </nav>
 
-  <!-- 首页板块：独立分割为创口贴屏(1F)和便利贴屏(2F) -->
+  <!-- 首页视窗：包含创口贴1F层 与 便签纸加星星2F层 -->
   <div id="view-home" class="sub-view-window" style="display: block;">
-    <!-- 第一层：刚进来的正中间创口贴 -->
+    <!-- 第一层：正中心纯净创口贴 -->
     <div class="home-screen-first">
       <img src="https://i.ibb.co/XfXrtnM5/welcome-to-pp.png" class="hero-welcome-bandaid" alt="welcome to pp">
     </div>
-    <!-- 第二层：滑下去浮现的粉色便利贴叙事区 -->
+    <!-- 第二层：完美还原图 3a3fcb19200a914ac7456b4e0eab104a.jpg 的叙事结合区 -->
     <div class="home-screen-second">
       <img src="https://i.ibb.co/1f4ykHN6/pp-logline.png" class="hero-logline-img" alt="Purble Place Story">
+      <!-- 补全遗留元素：粉色手绘落款星星 -->
+      <img src="https://i.ibb.co/gCDxMmM/pp2026-logo.png" class="hero-star-logo" alt="Purble Place Logo">
     </div>
   </div>
 
@@ -750,7 +759,7 @@
     }
   });
 
-  // 前端SPA路由控制
+  // 前端单页局部路由控制
   function switchView(viewId) {
     document.querySelectorAll('.sub-view-window').forEach(win => {
       win.style.display = 'none';
@@ -759,7 +768,7 @@
     const targetWin = document.getElementById(viewId);
     if (targetWin) {
       targetWin.style.display = 'block'; 
-      targetWin.scrollTop = 0; // 切换后窗口内部无缝回弹至顶部
+      targetWin.scrollTop = 0; 
     }
   }
 
