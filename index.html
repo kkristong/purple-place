@@ -44,15 +44,15 @@
 
   #cursor.clicked { transform: translate(-50%, -50%) scale(0.7) rotate(20deg); }
 
-  /* NAV (手写按钮图重构) */
+  /* NAV (手写导航按钮) */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
     display: flex;
     align-items: center;
-    justify-content: center; /* 居中对齐手写按钮行 */
-    padding: 2rem 3rem;
+    justify-content: center; 
+    padding: 2.5rem 3rem;
   }
 
   .nav-links-images {
@@ -63,10 +63,10 @@
   }
 
   .nav-links-images img {
-    height: 25px; /* 控制手写按钮图的合适高度 */
+    height: 25px; 
     width: auto;
     object-fit: contain;
-    mix-blend-mode: multiply; /* 让图片白底自然融入黄油底色背景 */
+    mix-blend-mode: multiply; 
     transition: transform 0.2s ease, opacity 0.2s ease;
   }
 
@@ -109,7 +109,7 @@
     flex-direction: column;
   }
 
-  /* HERO AREA 重构 (还原手写图排版) */
+  /* p2: 第一眼主页面 (只放创口贴和时间戳) */
   #hero {
     min-height: 100vh;
     display: flex;
@@ -118,22 +118,7 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: 8rem 2rem 4rem;
-  }
-
-  /* 居中的粉色胶带便签纸 */
-  .hero-logline-img {
-    max-width: 520px;
-    width: 100%;
-    height: auto;
-    mix-blend-mode: multiply;
-    margin-bottom: 2rem;
-    animation: float 6s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    padding: 6rem 2rem 2rem;
   }
 
   /* 蓝色 welcome to pp 创口贴 */
@@ -142,15 +127,42 @@
     width: 100%;
     height: auto;
     mix-blend-mode: multiply;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+    animation: float 6s ease-in-out infinite;
   }
 
-  /* 粉色手绘星星 Logo */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* p1: 往下滑动后的第二个叙事页面 (放粉色便签和星星) */
+  #story-board {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 6rem 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  /* 粉色胶带 logline 便签 */
+  .hero-logline-img {
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+    mix-blend-mode: multiply;
+    margin-bottom: 2.5rem;
+  }
+
+  /* 粉色手绘星星 logo */
   .hero-star-logo {
     height: 70px;
     width: auto;
     mix-blend-mode: multiply;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 
   .time-stamp {
@@ -160,8 +172,6 @@
     color: var(--accent-pink);
     text-align: center;
     letter-spacing: 0.1em;
-    position: relative;
-    z-index: 2;
     animation: blink 2s ease-in-out infinite;
   }
 
@@ -172,7 +182,7 @@
 
   .scroll-hint {
     position: absolute;
-    bottom: 2rem;
+    bottom: 2.5rem;
     left: 50%;
     transform: translateX(-50%);
     font-family: 'EB Garamond', serif;
@@ -195,7 +205,7 @@
   .circle-motif {
     position: absolute;
     border-radius: 50%;
-    border: 1px solid rgba(232, 122, 179, 0.15);
+    border: 1px solid rgba(232, 122, 179, 0.12);
     pointer-events: none;
     animation: rotate-slow linear infinite;
   }
@@ -796,9 +806,10 @@
 </main>
 
 <main id="hub-view">
+  <!-- NAV手写导航：作为顶部全局固定的导航 -->
   <nav>
     <ul class="nav-links-images">
-      <li><a href="#about"><img src="https://i.ibb.co/TDCJZhGN/Pattern.png" alt="Patterns"></a></li>
+      <li><a href="#story-board"><img src="https://i.ibb.co/TDCJZhGN/Pattern.png" alt="Patterns"></a></li>
       <li><a href="#about"><img src="https://i.ibb.co/fzMzGVqj/place.png" alt="Place"></a></li>
       <li><a href="#characters" onclick="resetCastBg()"><img src="https://i.ibb.co/XZbTttwv/people.png" alt="People"></a></li>
       <li><a href="#memories"><img src="https://i.ibb.co/p6Kx0TmX/memory.png" alt="Memory"></a></li>
@@ -807,22 +818,31 @@
     </ul>
   </nav>
 
+  <!-- p2: 第一眼看到的经典主界面 (只包含welcome创口贴) -->
   <section id="hero">
-    <div class="circle-motif" style="width:300px;height:300px;top:10%;right:5%;animation-duration:20s;"></div>
-    <div class="circle-motif" style="width:150px;height:150px;top:60%;left:3%;animation-duration:15s;animation-direction:reverse;"></div>
-
-    <img src="https://i.ibb.co/1f4ykHN6/pp-logline.png" class="hero-logline-img" alt="Purble Place Story">
-
+    <div class="circle-motif" style="width:300px;height:300px;top:15%;right:5%;animation-duration:20s;"></div>
+    
+    <!-- 蓝色手写创口贴作为主视觉居中 -->
     <img src="https://i.ibb.co/XfXrtnM5/welcome-to-pp.png" class="hero-welcome-bandaid" alt="welcome to pp">
 
-    <img src="https://i.ibb.co/gCDxMmM/pp2026-logo.png" class="hero-star-logo" alt="Purble Place Logo">
-
-    <div class="time-stamp" id="live-time">12 : 20</div>
-
     <div class="scroll-hint">
-      <span>向下</span>
+      <span>向下滚动</span>
       <div class="scroll-line"></div>
     </div>
+  </section>
+
+  <!-- p1: 往下滑动后的第二个叙事页面 (放粉色便签、星星以及定格时间) -->
+  <section id="story-board">
+    <div class="circle-motif" style="width:150px;height:150px;top:30%;left:3%;animation-duration:15s;animation-direction:reverse;"></div>
+
+    <!-- 粉色胶带 logline 便签 -->
+    <img src="https://i.ibb.co/1f4ykHN6/pp-logline.png" class="hero-logline-img" alt="Purble Place Story">
+
+    <!-- 粉色手绘星星 logo -->
+    <img src="https://i.ibb.co/gCDxMmM/pp2026-logo.png" class="hero-star-logo" alt="Purble Place Logo">
+
+    <!-- 古典定格仪式感时间戳 12:20 -->
+    <div class="time-stamp" id="live-time">12 : 20</div>
   </section>
 
   <div class="dot-divider">· · ·</div>
