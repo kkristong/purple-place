@@ -198,16 +198,17 @@
   }
 
   .time-stamp {
-    font-family: 'Space Mono', monospace;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--accent-pink);
+    font-family: 'EB Garamond', 'Noto Serif SC', serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 400; /* 变成细体 */
+    color: var(--accent-pink); /* 换成跟主视觉一致的古典深褐色，去掉粉色 */
     text-align: center;
     margin-top: 2rem;
     letter-spacing: 0.1em;
     position: relative;
     z-index: 2;
-    animation: blink 2s ease-in-out infinite;
+    animation: blink 2s ease-in-out infinite; 
+  }
   }
 
   @keyframes blink {
