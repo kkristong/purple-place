@@ -44,7 +44,7 @@
 
   #cursor.clicked { transform: translate(-50%, -50%) scale(0.7) rotate(20deg); }
 
-  /* NAV (手写导航按钮) */
+  /* NAV (重构：加入半透明磨砂底色，解决悬浮重叠诡异问题) */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -52,7 +52,11 @@
     display: flex;
     align-items: center;
     justify-content: center; 
-    padding: 2.5rem 3rem;
+    padding: 1.2rem 3rem; /* 稍微缩减上下内边距，让导航栏更清秀精致 */
+    background: rgba(253, 248, 240, 0.85); /* 半透明黄油底色自然融合背景 */
+    backdrop-filter: blur(10px); /* 现代高级磨砂玻璃特效，模糊滤过底层的图片 */
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(26, 20, 16, 0.04); /* 极淡的底部分割线提供物理边界感 */
   }
 
   .nav-links-images {
@@ -109,7 +113,7 @@
     flex-direction: column;
   }
 
-  /* p2: 第一眼主页面 (只放创口贴和时间戳) */
+  /* p2: 第一眼看到的经典主界面 */
   #hero {
     min-height: 100vh;
     display: flex;
@@ -121,13 +125,13 @@
     padding: 6rem 2rem 2rem;
   }
 
-  /* 蓝色 welcome to pp 创口贴 */
+  /* 蓝色手写创口贴作为主视觉居中 */
   .hero-welcome-bandaid {
     max-width: 320px;
     width: 100%;
     height: auto;
     mix-blend-mode: multiply;
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
     animation: float 6s ease-in-out infinite;
   }
 
@@ -136,7 +140,7 @@
     50% { transform: translateY(-6px); }
   }
 
-  /* p1: 往下滑动后的第二个叙事页面 (放粉色便签和星星) */
+  /* p1: 往下滑动后的第二个叙事页面 */
   #story-board {
     min-height: 100vh;
     display: flex;
@@ -144,7 +148,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: 6rem 2rem;
+    padding: 8rem 2rem 6rem; /* 优化上下边距防导航遮挡 */
     border-bottom: 1px solid rgba(0,0,0,0.05);
   }
 
@@ -180,27 +184,6 @@
     50% { opacity: 0.4; }
   }
 
-  .scroll-hint {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'EB Garamond', serif;
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .scroll-line {
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(to bottom, var(--muted), transparent);
-  }
-
   /* FLOATING CIRCLES */
   .circle-motif {
     position: absolute;
@@ -217,7 +200,7 @@
 
   /* SECTION BASE */
   section {
-    padding: 6rem 3rem;
+    padding: 8rem 3rem 6rem; /* 整体调大顶部内边距，给悬浮透明导航留出安全空间 */
     max-width: 1100px;
     margin: 0 auto;
   }
@@ -249,7 +232,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: start;
-    padding: 6rem 3rem;
+    padding: 8rem 3rem 6rem; /* 预留导航空间 */
     max-width: 1100px;
     margin: 0 auto;
     border-top: 1px solid rgba(0,0,0,0.08);
@@ -304,7 +287,7 @@
 
   /* CHARACTERS */
   #characters {
-    padding: 6rem 3rem;
+    padding: 8rem 3rem 6rem;
     max-width: 1100px;
     margin: 0 auto;
     border-top: 1px solid rgba(0,0,0,0.08);
@@ -393,7 +376,7 @@
 
   /* MEMORY WALL */
   #memories {
-    padding: 6rem 3rem;
+    padding: 8rem 3rem 6rem;
     max-width: 1100px;
     margin: 0 auto;
     border-top: 1px solid rgba(0,0,0,0.08);
@@ -560,7 +543,7 @@
 
   /* GALLERY */
   #gallery {
-    padding: 6rem 3rem;
+    padding: 8rem 3rem 6rem;
     max-width: 1100px;
     margin: 0 auto;
     border-top: 1px solid rgba(0,0,0,0.08);
@@ -777,7 +760,7 @@
     .memories-intro { grid-template-columns: 1fr; }
     .form-row { grid-template-columns: 1fr; }
     .memories-wall { column-count: 1; }
-    nav { padding: 1.2rem 1.5rem; }
+    nav { padding: 1rem 1.5rem; }
     .nav-links-images { gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
     .nav-links-images img { height: 18px; }
     section, #about, #characters, #memories, #gallery { padding: 4rem 1.5rem; }
@@ -806,7 +789,7 @@
 </main>
 
 <main id="hub-view">
-  <!-- NAV手写导航：作为顶部全局固定的导航 -->
+  <!-- NAV手写导航：已加入磨砂半透明底色，完美避免诡异层叠 -->
   <nav>
     <ul class="nav-links-images">
       <li><a href="#story-board"><img src="https://i.ibb.co/TDCJZhGN/Pattern.png" alt="Patterns"></a></li>
@@ -818,20 +801,15 @@
     </ul>
   </nav>
 
-  <!-- p2: 第一眼看到的经典主界面 (只包含welcome创口贴) -->
+  <!-- p2: 第一眼看到的经主界面 (彻底剔除向下滚动文字与线段) -->
   <section id="hero">
     <div class="circle-motif" style="width:300px;height:300px;top:15%;right:5%;animation-duration:20s;"></div>
     
-    <!-- 蓝色手写创口贴作为主视觉居中 -->
+    <!-- 蓝色手写创口贴主视觉居中 -->
     <img src="https://i.ibb.co/XfXrtnM5/welcome-to-pp.png" class="hero-welcome-bandaid" alt="welcome to pp">
-
-    <div class="scroll-hint">
-      <span>向下滚动</span>
-      <div class="scroll-line"></div>
-    </div>
   </section>
 
-  <!-- p1: 往下滑动后的第二个叙事页面 (放粉色便签、星星以及定格时间) -->
+  <!-- p1: 往下滑动后的第二个叙事页面 -->
   <section id="story-board">
     <div class="circle-motif" style="width:150px;height:150px;top:30%;left:3%;animation-duration:15s;animation-direction:reverse;"></div>
 
@@ -841,7 +819,7 @@
     <!-- 粉色手绘星星 logo -->
     <img src="https://i.ibb.co/gCDxMmM/pp2026-logo.png" class="hero-star-logo" alt="Purble Place Logo">
 
-    <!-- 古典定格仪式感时间戳 12:20 -->
+    <!-- 古典定格时间戳 12:20 -->
     <div class="time-stamp" id="live-time">12 : 20</div>
   </section>
 
@@ -997,6 +975,7 @@
     </div>
 
     <div class="memories-count">共 <span id="mem-count">0</span> 条记忆被保存</div>
+    <div class="nav-logo" style="margin-bottom: 2rem; display: none;">PP × feztg × 2026</div>
     <div class="memories-wall" id="memories-wall">
       <div class="empty-memories">还没有记忆——成为第一个留下记忆的人。</div>
     </div>
